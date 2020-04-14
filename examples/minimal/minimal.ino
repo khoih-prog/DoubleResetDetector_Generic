@@ -26,11 +26,9 @@
    Save data in EPPROM from address 1020, size 1024 bytes (both configurable)
    Note: Teensy 4.0 has only 1080 bytes of EEPROM-simulated Flash
    2) SAMD
-   Save data in
-   a) EEPROM-simulated FlashStorage from address 1020 (configurable to avoid conflict)
-   2) SAM DUE
-   Save data in
-   a) DueFlashStorage from address 1020 (configurable to avoid conflict)
+   Save data in EEPROM-simulated FlashStorage from address 1020 (configurable to avoid conflict)
+   3) SAM DUE
+   Save data in DueFlashStorage from address 1020 (configurable to avoid conflict)
    
    So when the device starts up it checks the EEPROM or (Due)FlashStorage for a flag to see if it has been recently reset 
    within the configurable timeout seconds

@@ -1,4 +1,4 @@
-## ESP_DoubleResetDetector
+## DoubleResetDetector_Generic
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
 
@@ -59,6 +59,10 @@ This library can be used to detect a double reset to enter a special, using :
 
 Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's WiFi or Blynk Credentials.
 
+### How It Works
+  
+   When the device starts up it checks the EEPROM or (Due)FlashStorage for a flag to see if it has been recently reset within the configurable timeout seconds
+   
 #### Usage
 
 How to use
