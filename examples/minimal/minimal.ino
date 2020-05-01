@@ -1,21 +1,22 @@
 /****************************************************************************************************************************
    minimal.ino
    DoubleResetDetector_Generic.h
-   For ESP8266 / ESP32 boards
+   For AVR Mega, Teensy, STM32, nRF52, SAM DUE, SAMD21, SAMD51 boards
 
    DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32. etc. boards
    to enable trigger configure mode by resetting the boards twice within configurable timeout seconds.
 
-   Based on and modified from DataCute https://github.com/datacute/DoubleResetDetector and 
-   https://github.com/khoih-prog/ESP_DoubleResetDetector 
+   Based on and modified from DataCute https://github.com/datacute/DoubleResetDetector and
+   https://github.com/khoih-prog/ESP_DoubleResetDetector
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.0.0
+   Version: 1.0.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
-    1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
+   1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
+   1.0.1   K Hoang      01/05/2020 Add sipport to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.
@@ -29,10 +30,12 @@
    Save data in EEPROM-simulated FlashStorage from address 1020 (configurable to avoid conflict)
    3) SAM DUE
    Save data in DueFlashStorage from address 1020 (configurable to avoid conflict)
-   
-   So when the device starts up it checks the EEPROM or (Due)FlashStorage for a flag to see if it has been recently reset 
-   within the configurable timeout seconds
-   It'll then display a message to signal if the DR is detected
+   3) Adafruit nRF52-based boards
+   Save data in InternalFS, fle "/drd.dat" location 0
+
+   So when the device starts up it checks the InternalFS file "/drd.dat", EEPROM or (Due)FlashStorage for a flag to see if it has been
+   recently reset within the configurable timeout seconds
+   It'll then set a flag, and display a message to signal if the DR is detected
 
    Settings
    There are two values to be set in the sketch.
@@ -44,7 +47,7 @@
    To support ESP32, use ESP_DoubleResetDetector library from https://github.com/khoih-prog/ESP_DoubleResetDetector
    To support AVR, Teensy, SAM DUE, SAMD and STM32, etc., use this DoubleResetDetector_Generic from //https://github.com/khoih-prog/DoubleResetDetector_Generic
  *****************************************************************************************************************************/
- 
+
 #define DRD_GENERIC_DEBUG       true  //false
 
 #include <DoubleResetDetector_Generic.h>
@@ -59,7 +62,7 @@
 DoubleResetDetector_Generic* drd;
 
 #ifndef LED_BUILTIN
-#define LED_BUILTIN       13         
+#define LED_BUILTIN       13
 #endif
 
 void setup()
@@ -68,13 +71,13 @@ void setup()
 
   Serial.begin(115200);
   while (!Serial);
-  
+
   Serial.println();
   Serial.println("DoubleResetDetector Example Program");
   Serial.println("-----------------------------------");
 
   drd = new DoubleResetDetector_Generic(DRD_TIMEOUT, DRD_ADDRESS);
-  
+
   if (drd->detectDoubleReset()) {
     Serial.println("Double Reset Detected");
     digitalWrite(LED_BUILTIN, LOW);

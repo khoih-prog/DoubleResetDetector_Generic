@@ -1,13 +1,28 @@
 {
     "name": "DoubleResetDetector_Generic",
-    "keywords": "eeprom,reset,data,avr,teensy,sam-due,samd,stm32",
-    "description": "Library to detect a double reset, using EEPROM, DueFlashStorage or FlashStorage for AVR, Teensy, SAM DUE, SAMD, STM32 boards",
+    "version": "1.0.1",
+    "keywords": "eeprom,reset,data,avr,teensy,sam-due,samd,stm32,nRF52,Adafruit, double reset, detector",
+    "description": "Library to detect a double reset, using EEPROM, DueFlashStorage, FlashStorage or LittleFS/InternalFS for AVR, Teensy, SAM DUE, SAMD, STM32, nRF52 boards",
+    "authors":
+    {
+      "name":  "Khoi Hoang",
+      "url":   "https://github.com/khoih-prog",
+      "maintainer": true
+    },    
     "repository":
     {
         "type": "git",
         "url": "https://github.com/khoih-prog/DoubleResetDetector_Generic"
     },
-    "version": "1.0.0",
-    "frameworks": "arduino",
-    "platforms": "*"
+    "homepage": "https://github.com/khoih-prog",
+    "export": {
+      "exclude": [
+        "linux",
+        "extras",
+        "tests"
+      ]
+    },    
+  "frameworks": "*",
+  "platforms": "*",
+  "examples": "examples/*/*/*.ino"
 }

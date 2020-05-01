@@ -10,11 +10,12 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.0.0
+   Version: 1.0.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
-    1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
+   1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
+   1.0.1   K Hoang      01/05/2020 Add sipport to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
  *****************************************************************************************************************************/
 
 #ifndef DoubleResetDetector_Generic_H
@@ -27,6 +28,9 @@
 // For AVR, Teensy, STM32 boards, use EEPROM
 // For SAM DUE, use DueFlashStorage. For SAMD, use FlashStorage_SAMD
 
+#define  DRD_FILENAME     "/drd.dat"
+#define  DRD_FLAG_OFFSET  0
+
 #if defined(ARDUINO) && (ARDUINO >= 100)
   #include <Arduino.h>
 #else
@@ -36,7 +40,7 @@
 #define DRD_GENERIC_USE_EEPROM      true
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-  #if defined(ETHERNET_USE_SAM_DUE)
+  #if defined(DRD_GENERIC_USE_SAM_DUE)
     #undef DRD_GENERIC_USE_SAM_DUE
   #endif
   #define DRD_GENERIC_USE_SAM_DUE     true
@@ -59,6 +63,21 @@
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
   #warning Use SAMD and FlashStorage
+  
+#elif ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+        defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
+        defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) | defined(NINA_B302_ublox) )    
+
+  #if defined(DRD_GENERIC_USE_NRF52)
+    #undef DRD_GENERIC_USE_NRF52
+  #endif
+  #define DRD_GENERIC_USE_NRF52      true
+  #if defined(DRD_GENERIC_USE_EEPROM)
+    #undef DRD_GENERIC_USE_EEPROM
+  #endif
+  #define DRD_GENERIC_USE_EEPROM    false
+  #warning Use NRF52 and LittleFS / InternalFS
+
 #else
   #if defined(CORE_TEENSY)
     #warning Use TEENSY and EEPROM
@@ -95,6 +114,15 @@
   //Use DueFlashStorage to simulate EEPROM
   #include <DueFlashStorage.h>                 //https://github.com/sebnil/DueFlashStorage
   DueFlashStorage dueFlashStorage;
+  
+#elif DRD_GENERIC_USE_NRF52
+  // Include LittleFS similar to SPIFFS
+  #include <Adafruit_LittleFS.h>
+  #include <InternalFileSystem.h>
+  using namespace Adafruit_LittleFS_Namespace;
+  
+  File DRD_file(InternalFS);
+  
 #endif    //#if DRD_GENERIC_USE_EEPROM
 
 #ifndef DRD_GENERIC_DEBUG
@@ -126,6 +154,11 @@ class DoubleResetDetector_Generic
       // Do something to init FlashStorage
 #elif DRD_GENERIC_USE_SAM_DUE
       // Do something to init DueFlashStorage
+      
+#elif DRD_GENERIC_USE_NRF52
+      // Do something to init LittleFS / InternalFS
+      // Initialize Internal File System
+      InternalFS.begin();
 #else
       #error Un-identifiable board selected. Please check your Tools->Board setting.
 #endif
@@ -206,6 +239,31 @@ class DoubleResetDetector_Generic
       
       return DOUBLERESETDETECTOR_FLAG;
     }
+#elif DRD_GENERIC_USE_NRF52
+    uint32_t readFlagNRF52(void)
+    {           
+      DRD_file.open(DRD_FILENAME, FILE_O_READ);
+      
+      if (DRD_file)
+      {
+        DRD_file.seek(DRD_FLAG_OFFSET);
+        DRD_file.read((char *) &DOUBLERESETDETECTOR_FLAG, sizeof(DOUBLERESETDETECTOR_FLAG));
+
+#if (DRD_GENERIC_DEBUG)
+        Serial.println("LittleFS Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+#endif
+
+        DRD_file.close(); 
+      }
+      else
+      {
+#if (DRD_GENERIC_DEBUG)
+        Serial.println("Loading DRD file failed");
+#endif
+      }
+           
+      return DOUBLERESETDETECTOR_FLAG;
+    }
 #endif
       
     bool detectRecentlyResetFlag()
@@ -221,6 +279,10 @@ class DoubleResetDetector_Generic
 #elif (DRD_GENERIC_USE_SAM_DUE)
       // SAM DUE code    
       doubleResetDetectorFlag = readFlagSAM_DUE();
+      
+#elif DRD_GENERIC_USE_NRF52
+      // nRF52 code    
+      doubleResetDetectorFlag = readFlagNRF52(); 
         
 #endif    //(DRD_GENERIC_USE_EEPROM)
 
@@ -269,7 +331,31 @@ class DoubleResetDetector_Generic
       delay(1000);
       readFlagSAM_DUE();
 #endif
+
+#elif DRD_GENERIC_USE_NRF52
+      // nRF52 code
+      DRD_file.open(DRD_FILENAME, FILE_O_WRITE);
       
+#if (DRD_GENERIC_DEBUG)
+      Serial.print("Saving DOUBLERESETDETECTOR_FLAG to DRD file : 0x");
+      Serial.println(String(DOUBLERESETDETECTOR_FLAG, HEX));
+#endif
+
+      if (DRD_file)
+      {
+        DRD_file.seek(DRD_FLAG_OFFSET);
+        DRD_file.write((uint8_t *) &DOUBLERESETDETECTOR_FLAG, sizeof(DOUBLERESETDETECTOR_FLAG));
+        DRD_file.close();
+#if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file OK");
+#endif
+      }
+      else
+      {
+#if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file failed");
+#endif
+      }      
 #endif    //(DRD_GENERIC_USE_EEPROM)
 
 #if (DRD_GENERIC_DEBUG)
@@ -313,12 +399,42 @@ class DoubleResetDetector_Generic
       delay(1000);
       readFlagSAM_DUE();
 #endif
+
+#elif DRD_GENERIC_USE_NRF52
+
+      // nRF52 code
+      DRD_file.open(DRD_FILENAME, FILE_O_WRITE);
+#if (DRD_GENERIC_DEBUG)
+      Serial.print("Saving to DRD file : 0x");
+      Serial.println(String(DOUBLERESETDETECTOR_FLAG, HEX));
+#endif
+
+      if (DRD_file)
+      {
+        DRD_file.seek(DRD_FLAG_OFFSET);
+        DRD_file.write((uint8_t *) &DOUBLERESETDETECTOR_FLAG, sizeof(DOUBLERESETDETECTOR_FLAG)); 
+   
+        DRD_file.close();
+#if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file OK");
+#endif
+      }
+      else
+      {
+#if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file failed");
+#endif
+      }   
       
 #endif    //(DRD_GENERIC_USE_EEPROM)
 
 #if (DRD_GENERIC_DEBUG)
       Serial.println("ClearFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+
+      delay(1000);
+      readFlagNRF52();
 #endif
+
     };
 
     uint32_t doubleResetDetectorFlag;
