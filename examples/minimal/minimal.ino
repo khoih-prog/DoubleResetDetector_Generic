@@ -11,12 +11,14 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.0.1
+   Version: 1.0.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
    1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
    1.0.1   K Hoang      01/05/2020 Add sipport to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
+   1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
+
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.

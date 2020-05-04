@@ -1,6 +1,6 @@
 {
     "name": "DoubleResetDetector_Generic",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "keywords": "eeprom,reset,data,avr,teensy,sam-due,samd,stm32,nRF52,Adafruit, double reset, detector",
     "description": "Library to detect a double reset, using EEPROM, DueFlashStorage, FlashStorage or LittleFS/InternalFS for AVR, Teensy, SAM DUE, SAMD, STM32, nRF52 boards",
     "authors":

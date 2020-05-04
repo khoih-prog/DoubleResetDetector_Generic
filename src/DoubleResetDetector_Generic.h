@@ -10,12 +10,13 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.0.1
+   Version: 1.0.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
    1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
-   1.0.1   K Hoang      01/05/2020 Add sipport to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
+   1.0.1   K Hoang      01/05/2020 Add support to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
+   1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
  *****************************************************************************************************************************/
 
 #ifndef DoubleResetDetector_Generic_H
@@ -318,6 +319,8 @@ class DoubleResetDetector_Generic
         EEPROM.write(offset, *_pointer);
       }
       
+      EEPROM.commit();
+      
 #if (DRD_GENERIC_DEBUG)
       delay(1000);
       readFlagSAMD();
@@ -386,6 +389,8 @@ class DoubleResetDetector_Generic
         EEPROM.write(offset, *_pointer);
       }
       
+      EEPROM.commit();
+      
 #if (DRD_GENERIC_DEBUG)
       delay(1000);
       readFlagSAMD();
@@ -426,15 +431,16 @@ class DoubleResetDetector_Generic
 #endif
       }   
       
+      delay(1000);
+      readFlagNRF52();
+      
 #endif    //(DRD_GENERIC_USE_EEPROM)
 
 #if (DRD_GENERIC_DEBUG)
       Serial.println("ClearFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
-
-      delay(1000);
-      readFlagNRF52();
 #endif
 
+//#endif    //(DRD_GENERIC_USE_EEPROM)
     };
 
     uint32_t doubleResetDetectorFlag;
