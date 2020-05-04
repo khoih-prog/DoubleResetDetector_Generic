@@ -153,6 +153,53 @@ void loop()
 }
 ```
 
+This is the terminal output for a Nano 33 IoT using [`WiFiManager_NINA_Lite`](https://github.com/khoih-prog/WiFiManager_NINA_Lite) when DRD is detected and not detected
+
+1. DRD Not Detected:
+
+```
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xd0d04321
+No doubleResetDetected             <====== No DRD
+SetFlag write = 0xd0d01234
+*NN: bg: noConfigPortal = true
+*NN: Connecting MultiWifi...
+*NN: con2WF:spentMsec=0
+WiFi-begin: return1 = 3
+WiFi-begin: return2 = 3
+*NN: con2WF:OK
+*NN: SSID=HueNet1,RSSI=-34
+*NN: IP=192.168.2.93
+*NN: b:WOK
+Stop doubleResetDetecting
+ClearFlag write = 0xd0d04321
+Your stored Credentials :
+Blynk Server1 = new-account.duckdns.org
+Token1 = new-token1
+Blynk Server2 = new-account.ddns.net
+Token2 = new-token2
+Port = 8080
+MQTT Server = new-mqtt.duckdns.org
+```
+
+2.DRD detected and Confog Portal opened
+
+```
+
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xd0d01234
+doubleResetDetected
+ClearFlag write = 0xd0d04321
+*NN: Double Reset Detected      <====== DRD detected
+*NN: bg: noConfigPortal = false
+*NN: b:OpenPortal               <====== Config Portal opened
+*NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
+*NN: IP=192.168.4.1,CH=10
+
+```
+
 You can also see how [`ESP_DoubleResetDetector`](https://github.com/khoih-prog/ESP_DoubleResetDetector) and [`DoubleResetDetector_Generic`](https://github.com/khoih-prog/DoubleResetDetector_Generic) are applied in many other libraries, such as:
 
 1. [`Blynk_WM`](https://github.com/khoih-prog/Blynk_WM)
