@@ -40,7 +40,7 @@ This library can be used to detect a double reset within a predetermined time to
 1. EEPROM for AVR, Teensy, STM32 boards.
 2. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, **NANO_33_IOT**, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
 3. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
-4. [Adafruit's LittleFS/InternalFS](www.adafruit.com)) for nRF52
+4. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52
 
 ---
 ---
