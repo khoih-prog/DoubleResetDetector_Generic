@@ -346,11 +346,16 @@ Detects a double reset so that an alternative start-up mode can be used. One exa
 #### Many other libraries are depending on this library's DRD feature
 
   All examples of these following libraries are using DRD feature of this [DoubleResetDetector_Generic Library](https://github.com/khoih-prog/DoubleResetDetector_Generic)
-  
-  1. [BlynkEthernet_WM](https://github.com/khoih-prog/BlynkEthernet_WM), 
-  2. [Blynk_Esp8266AT_WM](https://github.com/khoih-prog/Blynk_Esp8266AT_WM), 
-  3. [Blynk_WiFiNINA_WM](https://github.com/khoih-prog/Blynk_WiFiNINA_WM), 
-  4. [WiFiManager_NINA_Lite](https://github.com/khoih-prog/WiFiManager_NINA_Lite)
+   
+* [ 1. BlynkEthernet_WM](https://github.com/khoih-prog/BlynkEthernet_WM)
+* [ 2. Blynk_Esp8266AT_WM](https://github.com/khoih-prog/Blynk_Esp8266AT_WM)
+* [ 3. Blynk_WiFiNINA_WM](https://github.com/khoih-prog/Blynk_WiFiNINA_WM)
+* [ 4. WiFiManager_NINA_Lite](https://github.com/khoih-prog/WiFiManager_NINA_Lite)
+* [ 5. BlynkEthernet_STM32_WM](https://github.com/khoih-prog/BlynkEthernet_STM32_WM)
+* [ 6. ESP_AT_WM_Lite](https://github.com/khoih-prog/ESP_AT_WM_Lite)
+* [ 7. WIOTerminal_WiFiManager](https://github.com/khoih-prog/WIOTerminal_WiFiManager)
+* [ 8. Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
+* [ 9. Ethernet_Manager_STM32](https://github.com/khoih-prog/Ethernet_Manager_STM32)
 
   
 ---
