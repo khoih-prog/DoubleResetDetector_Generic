@@ -1,8 +1,8 @@
 /****************************************************************************************************************************
    DoubleResetDetector_Generic.h
-   For ESP8266 / ESP32 boards
+   Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
 
-   DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32. etc. boards
+   DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
    to enable trigger configure mode by resetting the boards twice within configurable timeout seconds.
 
    Based on and modified from DataCute https://github.com/datacute/DoubleResetDetector and 
@@ -10,17 +10,20 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.3
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
    1.0.0   K Hoang      14/04/2020 Initial coding for boards such as AVR, Teensy, SAM DUE, SAMD and STM32, etc.
    1.0.1   K Hoang      01/05/2020 Add support to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
    1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
+   1.0.3   K Hoang      28/12/2020 Suppress all possible compiler warnings
  *****************************************************************************************************************************/
 
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
+
+#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.0.3"
 
 #if ( defined(ESP32) || defined(ESP8266) )
   #error Please use ESP_DoubleResetDetector library (https://github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
@@ -130,15 +133,13 @@
 #define DRD_GENERIC_DEBUG       false
 #endif
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION "1.0.0"
-
 #define DOUBLERESETDETECTOR_GENERIC_FLAG_SET    0xD0D01234
 #define DOUBLERESETDETECTOR_GENERIC_FLAG_CLEAR  0xD0D04321
 
 class DoubleResetDetector_Generic
 {
   public:
-    DoubleResetDetector_Generic(int timeout, int address)
+    DoubleResetDetector_Generic(unsigned long timeout, int address)
     {
       this->timeout = timeout * 1000;
       this->DRD_EEPROM_START = address;
@@ -193,7 +194,7 @@ class DoubleResetDetector_Generic
 
     void loop()
     {
-      if (waitingForDoubleReset && millis() > timeout)
+      if ( waitingForDoubleReset && (millis() > timeout) )
       {
 #if (DRD_GENERIC_DEBUG)
         Serial.println("Stop doubleResetDetecting");
@@ -214,7 +215,7 @@ class DoubleResetDetector_Generic
 
   private:
     uint32_t DOUBLERESETDETECTOR_FLAG;
-    int timeout;
+    unsigned long timeout;
     int DRD_EEPROM_START;
     bool waitingForDoubleReset;
 
@@ -224,7 +225,7 @@ class DoubleResetDetector_Generic
       uint16_t offset   = DRD_EEPROM_START;               
       uint8_t* _pointer = (uint8_t *) &DOUBLERESETDETECTOR_FLAG;
       
-      for (int i = 0; i < sizeof(DOUBLERESETDETECTOR_FLAG); i++, _pointer++, offset++)
+      for (unsigned int i = 0; i < sizeof(DOUBLERESETDETECTOR_FLAG); i++, _pointer++, offset++)
       {              
         *_pointer = EEPROM.read(offset);
       }
@@ -314,7 +315,7 @@ class DoubleResetDetector_Generic
       uint16_t offset   = DRD_EEPROM_START;               
       uint8_t* _pointer = (uint8_t *) &DOUBLERESETDETECTOR_FLAG;
       
-      for (int i = 0; i < sizeof(DOUBLERESETDETECTOR_FLAG); i++, _pointer++, offset++)
+      for (unsigned int i = 0; i < sizeof(DOUBLERESETDETECTOR_FLAG); i++, _pointer++, offset++)
       {              
         EEPROM.write(offset, *_pointer);
       }
@@ -384,7 +385,7 @@ class DoubleResetDetector_Generic
       uint16_t offset   = DRD_EEPROM_START;               
       uint8_t* _pointer = (uint8_t *) &DOUBLERESETDETECTOR_FLAG;
       
-      for (int i = 0; i < sizeof(DOUBLERESETDETECTOR_FLAG); i++, _pointer++, offset++)
+      for (unsigned int i = 0; i < sizeof(DOUBLERESETDETECTOR_FLAG); i++, _pointer++, offset++)
       {              
         EEPROM.write(offset, *_pointer);
       }
