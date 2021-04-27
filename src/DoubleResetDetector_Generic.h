@@ -10,7 +10,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -18,12 +18,13 @@
    1.0.1   K Hoang      01/05/2020 Add support to Adafruit nRF52 boards, such as Feather, Itsy-Bitsy nRF52840, NINA_W302_ublox.
    1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
    1.0.3   K Hoang      28/12/2020 Suppress all possible compiler warnings
+   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
  *****************************************************************************************************************************/
 
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.0.3"
+#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.1.0"
 
 #if ( defined(ESP32) || defined(ESP8266) )
   #error Please use ESP_DoubleResetDetector library (https://github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
@@ -85,8 +86,6 @@
 #else
   #if defined(CORE_TEENSY)
     #warning Use TEENSY and EEPROM
-  #elif ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
-    #warning Use STM32 and EEPROM
   #elif ( defined(ARDUINO_AVR_ADK) || defined(ARDUINO_AVR_BT) || defined(ARDUINO_AVR_DUEMILANOVE) || defined(ARDUINO_AVR_ESPLORA) \
       || defined(ARDUINO_AVR_ETHERNET) || defined(ARDUINO_AVR_FIO) || defined(ARDUINO_AVR_GEMMA) || defined(ARDUINO_AVR_LEONARDO) \
       || defined(ARDUINO_AVR_LILYPAD) || defined(ARDUINO_AVR_LILYPAD_USB) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) \
@@ -127,6 +126,29 @@
   
   File DRD_file(InternalFS);
   
+#elif DRD_GENERIC_USE_STM32
+
+/////////////////////////////////////////////
+      
+  #if defined(DATA_EEPROM_BASE)
+      // For STM32 devices having integrated EEPROM.
+      #include <EEPROM.h>
+      #warning STM32 devices have integrated EEPROM. Not using buffered API.   
+  #else  
+      /**
+       Most STM32 devices don't have an integrated EEPROM. To emulate a EEPROM, the STM32 Arduino core emulated
+       the operation of an EEPROM with the help of the embedded flash.
+       Writing to a flash is very expensive operation, since a whole flash page needs to be written, even if you only
+       want to access the flash byte-wise.
+       The STM32 Arduino core provides a buffered access API to the emulated EEPROM. The library has allocated the
+       buffer even if you don't use the buffered API, so it's strongly suggested to use the buffered API anyhow.
+       */
+      #include <FlashStorage_STM32.h>       // https://github.com/khoih-prog/FlashStorage_STM32
+      #warning STM32 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32 library
+  #endif    // #if defined(DATA_EEPROM_BASE)
+
+  //////////////////////////////////////////////
+ 
 #endif    //#if DRD_GENERIC_USE_EEPROM
 
 #ifndef DRD_GENERIC_DEBUG
@@ -146,10 +168,28 @@ class DoubleResetDetector_Generic
       doubleResetDetected = false;
       waitingForDoubleReset = false;
           
-#if DRD_GENERIC_USE_EEPROM
+#if (DRD_GENERIC_USE_EEPROM)
+
       EEPROM.begin();
+      
   #if (DRD_GENERIC_DEBUG)
-      Serial.println("\nEEPROM size = " + String(DRD_EEPROM_SIZE) + ", start = " + String(DRD_EEPROM_START));
+      Serial.print("\nEEPROM size = ");
+      Serial.print(DRD_EEPROM_SIZE);
+      Serial.print(", start = ");
+      Serial.println(DRD_EEPROM_START);
+  #endif
+
+#elif (DRD_GENERIC_USE_STM32)
+
+  #if defined(DATA_EEPROM_BASE)      
+      EEPROM.begin();
+  #endif   
+      
+  #if (DRD_GENERIC_DEBUG)
+      Serial.print("\n(Emulated-)EEPROM size = ");
+      Serial.print(EEPROM.length());
+      Serial.print(", start = ");
+      Serial.println(DRD_EEPROM_START);
   #endif
         
 #elif DRD_GENERIC_USE_SAMD
@@ -270,7 +310,7 @@ class DoubleResetDetector_Generic
       
     bool detectRecentlyResetFlag()
     {
-#if (DRD_GENERIC_USE_EEPROM)
+#if (DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
       EEPROM.get(DRD_EEPROM_START, DOUBLERESETDETECTOR_FLAG);
       doubleResetDetectorFlag = DOUBLERESETDETECTOR_FLAG;
 
@@ -286,7 +326,7 @@ class DoubleResetDetector_Generic
       // nRF52 code    
       doubleResetDetectorFlag = readFlagNRF52(); 
         
-#endif    //(DRD_GENERIC_USE_EEPROM)
+#endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
 #if (DRD_GENERIC_DEBUG)
       Serial.println("Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
@@ -302,7 +342,7 @@ class DoubleResetDetector_Generic
 
       DOUBLERESETDETECTOR_FLAG = DOUBLERESETDETECTOR_GENERIC_FLAG_SET;
 
-#if (DRD_GENERIC_USE_EEPROM)
+#if (DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
       EEPROM.put(DRD_EEPROM_START, DOUBLERESETDETECTOR_FLAG);
 
 #if (DRD_GENERIC_DEBUG)
@@ -360,7 +400,7 @@ class DoubleResetDetector_Generic
         Serial.println("Saving DRD file failed");
 #endif
       }      
-#endif    //(DRD_GENERIC_USE_EEPROM)
+#endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
 #if (DRD_GENERIC_DEBUG)
       Serial.println("SetFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
@@ -372,7 +412,7 @@ class DoubleResetDetector_Generic
       doubleResetDetectorFlag = DOUBLERESETDETECTOR_GENERIC_FLAG_CLEAR;
       DOUBLERESETDETECTOR_FLAG = DOUBLERESETDETECTOR_GENERIC_FLAG_CLEAR;
 
-#if (DRD_GENERIC_USE_EEPROM)
+#if (DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
       EEPROM.put(DRD_EEPROM_START, DOUBLERESETDETECTOR_FLAG);
 
 #if (DRD_GENERIC_DEBUG)
@@ -435,13 +475,13 @@ class DoubleResetDetector_Generic
       delay(1000);
       readFlagNRF52();
       
-#endif    //(DRD_GENERIC_USE_EEPROM)
+#endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
 #if (DRD_GENERIC_DEBUG)
       Serial.println("ClearFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
 #endif
 
-//#endif    //(DRD_GENERIC_USE_EEPROM)
+//#endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
     };
 
     uint32_t doubleResetDetectorFlag;
