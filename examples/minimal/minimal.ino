@@ -11,7 +11,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.1.0
+   Version: 1.2.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -20,6 +20,7 @@
    1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
    1.0.3   K Hoang      28/12/2020 Suppress all possible compiler warnings
    1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
+   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.
@@ -65,7 +66,7 @@
 DoubleResetDetector_Generic* drd;
 
 #ifndef LED_BUILTIN
-#define LED_BUILTIN       13
+  #define LED_BUILTIN       13
 #endif
 
 void setup()
@@ -76,7 +77,13 @@ void setup()
   while (!Serial);
 
   Serial.println();
-  Serial.println("DoubleResetDetector minimal Example Program");
+
+#if defined(BOARD_NAME)
+  Serial.print(F("DoubleResetDetector minimal Example Program on ")); Serial.println(BOARD_NAME);
+#else
+  Serial.println(F("DoubleResetDetector minimal Example Program"));
+#endif
+  
   Serial.println(DOUBLERESETDETECTOR_GENERIC_VERSION);
   Serial.println("-----------------------------------");
 
