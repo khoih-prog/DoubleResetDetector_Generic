@@ -10,7 +10,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.2.0
+   Version: 1.3.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -19,7 +19,8 @@
    1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
    1.0.3   K Hoang      28/12/2020 Suppress all possible compiler warnings
    1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
-   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
+   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
+   1.3.0   K Hoang      28/05/2021 Add support to RASPBERRY_PI_PICO using Arduino mbed_rp2040 core
  *****************************************************************************************************************************/
 
 #pragma once
@@ -27,7 +28,7 @@
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.2.0"
+#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.3.0"
 
 #if ( defined(ESP32) || defined(ESP8266) )
   #error Please use ESP_DoubleResetDetector library (https://github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
@@ -86,7 +87,7 @@
   #define DRD_GENERIC_USE_EEPROM    false
   #warning Use NRF52 and LittleFS / InternalFS
 
-#elif ( defined(ARDUINO_ARCH_RP2040) )
+#elif ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) )
   #if defined(DRD_GENERIC_USE_RP2040)
     #undef DRD_GENERIC_USE_RP2040
   #endif
@@ -97,6 +98,17 @@
   #define DRD_GENERIC_USE_EEPROM    false
   #warning Use RP2040 (such as RASPBERRY_PI_PICO) and LittleFS
 
+#elif ( defined(ARDUINO_ARCH_RP2040) && defined(ARDUINO_ARCH_MBED) )
+  #if defined(DRD_GENERIC_USE_MBED_RP2040)
+    #undef DRD_GENERIC_USE_MBED_RP2040
+  #endif
+  #define DRD_GENERIC_USE_MBED_RP2040      true
+  #if defined(DRD_GENERIC_USE_EEPROM)
+    #undef DRD_GENERIC_USE_EEPROM
+  #endif
+  #define DRD_GENERIC_USE_EEPROM    false
+  #warning Use MBED RP2040 (such as NANO_RP2040_CONNECT, RASPBERRY_PI_PICO) and LittleFS
+  
 #else
   #if defined(CORE_TEENSY)
     #warning Use TEENSY and EEPROM
@@ -154,6 +166,50 @@
   FS* filesystem =      &LittleFS;
   #define FileFS        LittleFS
 
+/////////////////////////////
+#elif DRD_GENERIC_USE_MBED_RP2040
+
+  //Use LittleFS for MBED RPI Pico
+  #include "FlashIAPBlockDevice.h"
+  #include "LittleFileSystem.h"
+  #include "mbed.h"
+
+  #include <stdio.h>
+  #include <errno.h>
+  #include <functional>
+
+  #include "BlockDevice.h"
+
+  #if !defined(RP2040_FLASH_SIZE)
+    #define RP2040_FLASH_SIZE         (2 * 1024 * 1024)
+  #endif
+
+  #if !defined(RP2040_FS_LOCATION_END)
+  #define RP2040_FS_LOCATION_END    RP2040_FLASH_SIZE
+  #endif
+
+  #if !defined(RP2040_FS_SIZE_KB)
+    // Using default 16KB for LittleFS
+    #define RP2040_FS_SIZE_KB       (64)
+  #endif
+
+  #if !defined(RP2040_FS_START)
+    #define RP2040_FS_START           (RP2040_FLASH_SIZE - (RP2040_FS_SIZE_KB * 1024))
+  #endif
+
+  #if !defined(FORCE_REFORMAT)
+    #define FORCE_REFORMAT            false
+  #endif
+
+  FlashIAPBlockDevice bd(XIP_BASE + RP2040_FS_START, (RP2040_FS_SIZE_KB * 1024));
+
+  mbed::LittleFileSystem fs("fs");
+  
+  #if defined(DRD_FILENAME)
+    #undef DRD_FILENAME
+  #endif
+  #define  DRD_FILENAME     "/fs/drd.dat"
+  
 /////////////////////////////
 #elif DRD_GENERIC_USE_STM32
 
@@ -255,6 +311,39 @@ class DoubleResetDetector_Generic
         Serial.println("\nLittleFS error");
       }
   #endif
+  
+/////////////////////////////
+#elif DRD_GENERIC_USE_MBED_RP2040
+
+      Serial.print("LittleFS size (KB) = ");
+      Serial.println(RP2040_FS_SIZE_KB);
+      
+      int err = fs.mount(&bd);
+      
+  #if (DRD_GENERIC_DEBUG) 
+      Serial.println(err ? "LittleFS Mount Fail" : "LittleFS Mount OK");
+  #endif
+  
+      if (err)
+      {
+  #if (DRD_GENERIC_DEBUG)     
+        // Reformat if we can't mount the filesystem
+        Serial.println("Formatting... ");
+        Serial.flush();
+  #endif
+  
+        err = fs.reformat(&bd);
+      }
+  
+      bool beginOK = (err == 0);
+
+  #if (DRD_GENERIC_DEBUG)      
+      if (!beginOK)
+      {
+        Serial.println("\nLittleFS error");
+      }
+  #endif
+
 
 /////////////////////////////    
 #else
@@ -423,6 +512,38 @@ class DoubleResetDetector_Generic
     
     /////////////////////////////////////////////
 
+#elif DRD_GENERIC_USE_MBED_RP2040
+
+    /////////////////////////////////////////////
+
+    uint32_t readFlagMbedRP2040()
+    {           
+      FILE *file = fopen(DRD_FILENAME, "r");
+      
+      if (file)
+      {
+        fseek(file, DRD_FLAG_OFFSET, SEEK_SET);
+        fread((uint8_t *) &DOUBLERESETDETECTOR_FLAG, 1, sizeof(DOUBLERESETDETECTOR_FLAG), file);
+
+  #if (DRD_GENERIC_DEBUG)
+        Serial.println("LittleFS Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+  #endif
+
+        fclose(file);
+      }
+      else
+      {
+  #if (DRD_GENERIC_DEBUG)
+        Serial.println("Loading DRD file failed");
+  #endif
+      }
+           
+      return DOUBLERESETDETECTOR_FLAG;
+    }
+    
+    /////////////////////////////////////////////
+
+
 #endif
 
     /////////////////////////////////////////////
@@ -453,6 +574,11 @@ class DoubleResetDetector_Generic
 #elif DRD_GENERIC_USE_RP2040      
       // RP2040 code    
       doubleResetDetectorFlag = readFlagRP2040(); 
+
+#elif DRD_GENERIC_USE_MBED_RP2040
+
+      // MBED RP2040 code    
+      doubleResetDetectorFlag = readFlagMbedRP2040();
       
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 /////////////////////////////
@@ -553,6 +679,34 @@ class DoubleResetDetector_Generic
         file.seek(DRD_FLAG_OFFSET);
         file.write((uint8_t *) &DOUBLERESETDETECTOR_FLAG, sizeof(DOUBLERESETDETECTOR_FLAG));
         file.close();
+  #if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file OK");
+  #endif
+      }
+      else
+      {
+  #if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file failed");
+  #endif
+      }
+
+/////////////////////////////  
+#elif DRD_GENERIC_USE_MBED_RP2040
+
+      // Mbed RP2040 code
+      FILE *file = fopen(DRD_FILENAME, "w");
+      
+  #if (DRD_GENERIC_DEBUG)
+      Serial.print("Saving DOUBLERESETDETECTOR_FLAG to DRD file : 0x");
+      Serial.println(String(DOUBLERESETDETECTOR_FLAG, HEX));
+  #endif
+
+      if (file)
+      {
+        fseek(file, DRD_FLAG_OFFSET, SEEK_SET);
+        fwrite((uint8_t *) &DOUBLERESETDETECTOR_FLAG, 1, sizeof(DOUBLERESETDETECTOR_FLAG), file);
+        
+        fclose(file);
   #if (DRD_GENERIC_DEBUG)
         Serial.println("Saving DRD file OK");
   #endif
@@ -681,7 +835,40 @@ class DoubleResetDetector_Generic
       
       delay(1000);
       readFlagRP2040();
-   
+
+/////////////////////////////
+
+#elif DRD_GENERIC_USE_MBED_RP2040
+
+      // Mbed RP2040 code
+      FILE *file = fopen(DRD_FILENAME, "w");
+      
+  #if (DRD_GENERIC_DEBUG)
+      Serial.print("Saving to DRD file : 0x");
+      Serial.println(String(DOUBLERESETDETECTOR_FLAG, HEX));
+  #endif
+
+      if (file)
+      {       
+        fseek(file, DRD_FLAG_OFFSET, SEEK_SET);
+        fwrite((uint8_t *) &DOUBLERESETDETECTOR_FLAG, 1, sizeof(DOUBLERESETDETECTOR_FLAG), file);
+        
+        fclose(file);
+        
+  #if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file OK");
+  #endif
+      }
+      else
+      {
+  #if (DRD_GENERIC_DEBUG)
+        Serial.println("Saving DRD file failed");
+  #endif
+      }   
+      
+      delay(1000);
+      readFlagMbedRP2040();
+      
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
 /////////////////////////////

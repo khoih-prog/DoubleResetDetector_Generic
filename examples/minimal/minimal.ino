@@ -66,7 +66,7 @@
 DoubleResetDetector_Generic* drd;
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN       13
+#define LED_BUILTIN       25  //13
 #endif
 
 void setup()
@@ -83,18 +83,18 @@ void setup()
 #else
   Serial.println(F("DoubleResetDetector minimal Example Program"));
 #endif
-  
+
   Serial.println(DOUBLERESETDETECTOR_GENERIC_VERSION);
   Serial.println("-----------------------------------");
 
   drd = new DoubleResetDetector_Generic(DRD_TIMEOUT, DRD_ADDRESS);
 
-  if (drd->detectDoubleReset()) 
+  if (drd->detectDoubleReset())
   {
     Serial.println("Double Reset Detected");
     digitalWrite(LED_BUILTIN, LOW);
-  } 
-  else 
+  }
+  else
   {
     Serial.println("No Double Reset Detected");
     digitalWrite(LED_BUILTIN, HIGH);
