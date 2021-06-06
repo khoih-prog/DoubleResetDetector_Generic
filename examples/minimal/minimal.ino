@@ -11,7 +11,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.2.0
+   Version: 1.4.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -20,7 +20,9 @@
    1.0.2   K Hoang      04/05/2020 Fix not-detected DRD bug for SAMD boards.
    1.0.3   K Hoang      28/12/2020 Suppress all possible compiler warnings
    1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
-   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
+   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
+   1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
+   1.4.0   K Hoang      05/06/2021 Permit more control over LittleFS for RP2040 Arduino mbed core
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.

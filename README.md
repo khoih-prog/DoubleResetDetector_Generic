@@ -15,6 +15,7 @@
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
 * [Changelog](#changelog)
+  * [Major Releases v1.4.0](#major-releases-v140)
   * [Major Releases v1.3.0](#major-releases-v130)
   * [Major Releases v1.2.0](#major-releases-v120)
   * [Major Releases v1.1.0](#major-releases-v110)
@@ -106,6 +107,8 @@ This library can be used to detect a double reset within a predetermined time to
 5. LittleFS for RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040** using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico)
 6. LittleFS for RP2040-based boards, such as **Nano RP2040 Connect, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040** using [**Arduino mbed OS for RP2040/Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
 
+---
+
 #### Currently supported Boards
 
 This [**DoubleResetDetector_Generic** library](https://github.com/khoih-prog/DoubleResetDetector_Generic) currently supports these following boards:
@@ -150,8 +153,14 @@ This [**DoubleResetDetector_Generic** library](https://github.com/khoih-prog/Dou
 10. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed)
 
 ---
+---
 
 ## Changelog
+
+### Major Releases v1.4.0
+
+1. Permit more control over LittleFS for RP2040 Arduino mbed core, such as `FORCE_REFORMAT`, `MBED_RP2040_INITIALIZED`, `DRD_MBED_LITTLEFS_NEED_INIT`.
+
 
 ### Major Releases v1.3.0
 
@@ -204,12 +213,12 @@ This [**DoubleResetDetector_Generic** library](https://github.com/khoih-prog/Dou
  6. [`Adafruit SAMD core 1.7.2+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v0.22.1+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
- 9. [`Earle Philhower's arduino-pico core v1.6.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+ 9. [`Earle Philhower's arduino-pico core v1.7.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 10. [`Arduino mbed_rp2040 core 2.1.0+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest) 
 11. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest)
 12. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
 13. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
-14. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52. Already included if you already installed Adafruit **nRF52 board package** from Boards Manager.
+
 
 ---
 ---
@@ -239,21 +248,22 @@ Another way to install is to:
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
+---
 
 ### Packages' Patches
 
 #### 1. For Adafruit nRF52840 and nRF52832 boards
 
-**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.1](Packages_Patches/adafruit/hardware/nrf52/0.21.1) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1). 
+**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.22.1](Packages_Patches/adafruit/hardware/nrf52/0.22.1) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1). 
 
-Supposing the Adafruit nRF52 version is 0.21.1. These files must be copied into the directory:
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/boards.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/variants/NINA_B302_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/variants/NINA_B302_ublox/variant.cpp`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/variants/NINA_B112_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/variants/NINA_B112_ublox/variant.cpp`
-- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.21.1/cores/nRF5/Udp.h`**
+Supposing the Adafruit nRF52 version is 0.22.1. These files must be copied into the directory:
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/variants/NINA_B112_ublox/variant.cpp`
+- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.22.1/cores/nRF5/Udp.h`**
 
 Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
 These files must be copied into the directory:
@@ -446,6 +456,7 @@ Detects a double reset so that an alternative start-up mode can be used. One exa
    When the device starts up it checks the EEPROM, (Due)FlashStorage or LittleFS file `/drd.dat` for a flag to see if it has been recently reset within the configurable timeout seconds
    
 ---
+---
    
 ### Examples: 
 
@@ -468,6 +479,7 @@ Detects a double reset so that an alternative start-up mode can be used. One exa
 * [10. WiFiManager_Generic_Lite](https://github.com/khoih-prog/WiFiManager_Generic_Lite)
   
   
+---
 ---
    
 #### Example [minimal](examples/minimal)
@@ -522,6 +534,7 @@ void loop()
 }
 ```
 
+---
 ---
 
 ### Debug Terminal Output Samples
@@ -584,7 +597,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.3.0
+DoubleResetDetector_Generic v1.4.0
 -----------------------------------
 LittleFS Flag read = 0xd0d04321
 Flag read = 0xd0d04321
@@ -606,7 +619,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.3.0
+DoubleResetDetector_Generic v1.4.0
 -----------------------------------
 LittleFS Flag read = 0xd0d01234
 Flag read = 0xd0d01234
@@ -628,7 +641,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.3.0
+DoubleResetDetector_Generic v1.4.0
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -652,7 +665,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.3.0
+DoubleResetDetector_Generic v1.4.0
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -676,7 +689,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.3.0
+DoubleResetDetector_Generic v1.4.0
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -700,7 +713,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.3.0
+DoubleResetDetector_Generic v1.4.0
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -767,6 +780,10 @@ If you get compilation errors, more often than not, you may need to install a ne
 ---
 
 ### Releases
+
+### Major Releases v1.4.0
+
+1. Permit more control over LittleFS for RP2040 Arduino mbed core, such as `FORCE_REFORMAT`, `MBED_RP2040_INITIALIZED`, `DRD_MBED_LITTLEFS_NEED_INIT`.
 
 ### Major Releases v1.3.0
 
@@ -839,7 +856,7 @@ Submit issues to: [DoubleResetDetector_Generic issues](https://github.com/khoih-
 ---
 ---
 
-### Contributions and thanks
+### Contributions and Thanks
 
 1. Thanks to [Stephen Denne](https://github.com/datacute) for the [`DoubleResetDetector library`](https://github.com/datacute/DoubleResetDetector) this library is based upon.
 2. Thanks to [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for help in debugging and testing. Without that, support to nRF52, especially **NINA_B302_ublox running as nRF52840**, has never been started and finished. See [u-blox nina b](https://github.com/khoih-prog/WiFiNINA_Generic/issues/1)
