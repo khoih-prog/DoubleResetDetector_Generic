@@ -40,7 +40,7 @@
       "owner": "khoih.prog",
       "name": "FlashStorage_RTL8720",
       "version": "^1.0.0",
-      "platforms": "AmebaD"
+      "platforms": "*"
     }
   ],
   "frameworks": "*",
