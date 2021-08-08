@@ -668,7 +668,7 @@ class DoubleResetDetector_Generic
 
 /////////////////////////////
 #elif (DRD_GENERIC_USE_RTL8720)
-      // SAMD code  
+      // RTL8720 code  
       doubleResetDetectorFlag = readFlagRTL8720();
             
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
@@ -981,12 +981,7 @@ class DoubleResetDetector_Generic
       delay(1000);
       readFlagRTL8720();
   #endif  
-      
-  #if (DRD_GENERIC_DEBUG)
-      delay(1000);
-      readFlagRTL8720();
-  #endif
-        
+             
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
 /////////////////////////////
