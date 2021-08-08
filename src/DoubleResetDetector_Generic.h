@@ -10,7 +10,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.4.0
+   Version: 1.5.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -22,6 +22,7 @@
    1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
    1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
    1.4.0   K Hoang      05/06/2021 Permit more control over LittleFS for RP2040 Arduino mbed core
+   1.5.0   K Hoang      07/08/2021 Add support to RTL8720DN, etc. using AmebaD core
  *****************************************************************************************************************************/
 
 #pragma once
@@ -29,7 +30,7 @@
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.4.0"
+#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.5.0"
 
 #if ( defined(ESP32) || defined(ESP8266) )
   #error Please use ESP_DoubleResetDetector library (https://github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
@@ -37,6 +38,7 @@
 
 // For AVR, Teensy, STM32 boards, use EEPROM
 // For SAM DUE, use DueFlashStorage. For SAMD, use FlashStorage_SAMD
+// For RTL8720, use FlashStorage_RTL8720
 
 #define  DRD_FILENAME     "/drd.dat"
 #define  DRD_FLAG_OFFSET  0
@@ -48,6 +50,16 @@
 #endif
 
 #define DRD_GENERIC_USE_EEPROM      true
+
+///////////////////////////// 
+
+#define DRD_GENERIC_USE_SAM_DUE     false
+#define DRD_GENERIC_USE_SAMD        false
+#define DRD_GENERIC_USE_STM32       false
+#define DRD_GENERIC_USE_NRF52       false
+#define DRD_GENERIC_USE_RP2040      false
+#define DRD_GENERIC_USE_MBED_RP2040 false
+#define DRD_GENERIC_USE_RTL8720     false
 
 ///////////////////////////// 
 
@@ -137,6 +149,19 @@
   #define DRD_GENERIC_USE_EEPROM    false
   
   #warning Use MBED RP2040 (such as NANO_RP2040_CONNECT, RASPBERRY_PI_PICO) and LittleFS
+
+/////////////////////////////
+#elif defined(CONFIG_PLATFORM_8721D)
+
+  #if defined(DRD_GENERIC_USE_RTL8720)
+    #undef DRD_GENERIC_USE_RTL8720
+  #endif
+  #define DRD_GENERIC_USE_RTL8720      true
+  #if defined(DRD_GENERIC_USE_EEPROM)
+    #undef DRD_GENERIC_USE_EEPROM
+  #endif
+  #define DRD_GENERIC_USE_EEPROM    false
+  #warning Use RTL8720 and FlashStorage_RTL8720
 
 /////////////////////////////   
 #else
@@ -268,10 +293,16 @@
   #endif    // #if defined(DATA_EEPROM_BASE)
 
   //////////////////////////////////////////////
- 
+
+
+#elif DRD_GENERIC_USE_RTL8720
+  // Include FlashStorage API for FlashStorage_RTL8720
+  #include <FlashStorage_RTL8720.h>             //https://github.com/khoih-prog/FlashStorage_RTL8720
+
+///////////////////////////// 
 #endif    //#if DRD_GENERIC_USE_EEPROM
 
-
+/////////////////////////////////////////////
 
 #ifndef DRD_GENERIC_DEBUG
   #define DRD_GENERIC_DEBUG       false
@@ -383,7 +414,10 @@ class DoubleResetDetector_Generic
       }
   #endif
 
-
+/////////////////////////////        
+#elif DRD_GENERIC_USE_RTL8720
+      // Do something to init FlashStorage_RTL8720
+      
 /////////////////////////////    
 #else
       #error Un-identifiable board selected. Please check your Tools->Board setting.
@@ -582,6 +616,19 @@ class DoubleResetDetector_Generic
     
     /////////////////////////////////////////////
 
+#elif (DRD_GENERIC_USE_RTL8720)
+
+    /////////////////////////////////////////////
+
+    uint32_t readFlagRTL8720()
+    {             
+      // Using name DRD_EEPROM_START, but actually FlashStorage not EEPROM
+      FlashStorage.get(DRD_EEPROM_START, DOUBLERESETDETECTOR_FLAG);
+      
+      return DOUBLERESETDETECTOR_FLAG;
+    }
+    
+    /////////////////////////////////////////////
 
 #endif
 
@@ -618,7 +665,12 @@ class DoubleResetDetector_Generic
 
       // MBED RP2040 code    
       doubleResetDetectorFlag = readFlagMbedRP2040();
-      
+
+/////////////////////////////
+#elif (DRD_GENERIC_USE_RTL8720)
+      // SAMD code  
+      doubleResetDetectorFlag = readFlagRTL8720();
+            
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 /////////////////////////////
 
@@ -756,7 +808,17 @@ class DoubleResetDetector_Generic
         Serial.println("Saving DRD file failed");
   #endif
       }
-      
+
+/////////////////////////////
+#elif (DRD_GENERIC_USE_RTL8720)
+      // RTL8720 code           
+      FlashStorage.put(DRD_EEPROM_START, DOUBLERESETDETECTOR_FLAG);
+           
+  #if (DRD_GENERIC_DEBUG)
+      delay(1000);
+      readFlagRTL8720();
+  #endif  
+        
 /////////////////////////////               
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
@@ -907,7 +969,24 @@ class DoubleResetDetector_Generic
       
       delay(1000);
       readFlagMbedRP2040();
+
+/////////////////////////////
+
+#elif (DRD_GENERIC_USE_RTL8720)
+     
+      // RTL8720 code           
+      FlashStorage.put(DRD_EEPROM_START, DOUBLERESETDETECTOR_FLAG);
+           
+  #if (DRD_GENERIC_DEBUG)
+      delay(1000);
+      readFlagRTL8720();
+  #endif  
       
+  #if (DRD_GENERIC_DEBUG)
+      delay(1000);
+      readFlagRTL8720();
+  #endif
+        
 #endif    //(DRD_GENERIC_USE_EEPROM || DRD_GENERIC_USE_STM32)
 
 /////////////////////////////
