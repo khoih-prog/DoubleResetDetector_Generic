@@ -77,7 +77,7 @@
   * [5. minimal on Rtlduino RTL8720DN using FlashStorage](#5-minimal-on-rtlduino-rtl8720dn-using-flashstorage)
     * [5.1 No DRD](#51-no-drd)
     * [5.2 DRD](#52-drd)
-  * [6. minimal on Nano 33 BLE using LittleFS](#6-minimal-on-nano-33-ble-using-littlfs)
+  * [6. minimal on Nano 33 BLE using LittleFS](#6-minimal-on-nano-33-ble-using-littlefs)
     * [6.1 No DRD](#61-no-drd)
     * [6.2 DRD](#62-drd) 
 * [Libraries using ESP_DoubleResetDetector or DoubleResetDetector_Generic library](#libraries-using-esp_doubleresetdetector-or-doubleresetdetector_generic-library)
