@@ -32,7 +32,7 @@
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.6.0"
+#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.7.0"
 
 #if ( defined(ESP32) || defined(ESP8266) )
   #error Please use ESP_DoubleResetDetector library (https://github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
