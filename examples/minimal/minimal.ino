@@ -11,7 +11,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
    Licensed under MIT license
-   Version: 1.6.0
+   Version: 1.7.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -25,6 +25,7 @@
    1.4.0   K Hoang      05/06/2021 Permit more control over LittleFS for RP2040 Arduino mbed core
    1.5.0   K Hoang      07/08/2021 Add support to RTL8720DN, etc. using AmebaD core
    1.6.0   K Hoang      29/08/2021 Add support to MBED Nano_33_BLE, Nano_33_BLE_Sense, etc. using LittleFS
+   1.7.0   K Hoang      10/09/2021 Add support to MBED Portenta_H7 using LittleFS
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.
@@ -64,10 +65,10 @@
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
-#define DRD_TIMEOUT 10
+#define DRD_TIMEOUT         10
 
 // RTC Memory Address for the DoubleResetDetector to use
-#define DRD_ADDRESS 0
+#define DRD_ADDRESS         0
 
 DoubleResetDetector_Generic* drd;
 
