@@ -30,6 +30,10 @@
 
 ## Changelog
 
+### Releases v1.7.2
+
+1. Back to using auto LittleFS size to fix bug and to permit 8 LittleFS files instead of 4 in previous release. There is a bug somewhere in the mbed_portenta core and we have to live with it.
+
 ### Releases v1.7.1
 
 1. Change the default and minimum LITTLEFS_PORTENTA_H7_SIZE_KB to 1024KB, instead at maximum available size. This is done to avoid the cases where the code size is larger, and LittleFS size has to be changed, reformatted, leading to data loss.

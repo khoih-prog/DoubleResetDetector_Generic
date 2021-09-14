@@ -1,16 +1,17 @@
 /****************************************************************************************************************************
-  DoubleResetDetector_Generic.h
-  Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
+   DoubleResetDetector_Generic.h
+   Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
 
-  DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
-  to enable trigger configure mode by resetting the boards twice within configurable timeout seconds.
+   DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
+   to enable trigger configure mode by resetting the boards twice within configurable timeout seconds.
 
-  Based on and modified from DataCute https://github.com/datacute/DoubleResetDetector and 
-  https://github.com/khoih-prog/ESP_DoubleResetDetector 
+   Based on and modified from DataCute https://github.com/datacute/DoubleResetDetector and 
+   https://github.com/khoih-prog/ESP_DoubleResetDetector 
 
-  Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
-  Licensed under MIT license
-  Version: 1.7.1
+   Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
+   Licensed under MIT license
+   
+   Version: 1.7.2
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -26,6 +27,7 @@
   1.6.0   K Hoang      29/08/2021 Add support to MBED Nano_33_BLE, Nano_33_BLE_Sense, etc. using LittleFS
   1.7.0   K Hoang      10/09/2021 Add support to MBED Portenta_H7 using LittleFS
   1.7.1   K Hoang      13/09/2021 Select fix LittleFS size of 1024KB
+  1.7.2   K Hoang      14/09/2021 Back to using auto LittleFS to fix bug
  *****************************************************************************************************************************/
 
 #pragma once
@@ -33,10 +35,10 @@
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.7.1"
+#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.7.2"
 
 #if ( defined(ESP32) || defined(ESP8266) )
-  #error Please use ESP_DoubleResetDetector library (https://github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
+  #error Please use ESP_DoubleResetDetector library (github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
 #endif
 
 // For AVR, Teensy, STM32 boards, use EEPROM
@@ -364,15 +366,6 @@
   
   #include "mbed_portenta/FlashIAPLimits.h"
 
-  #if !defined(LITTLEFS_PORTENTA_H7_SIZE_KB)
-    #define LITTLEFS_PORTENTA_H7_SIZE_KB     1024
-    #warning Force LITTLEFS_PORTENTA_H7_SIZE_KB to 1024 (KB)
-  #elif (LITTLEFS_PORTENTA_H7_SIZE_KB < 1024)
-    #undef LITTLEFS_PORTENTA_H7_SIZE_KB
-    #define LITTLEFS_PORTENTA_H7_SIZE_KB     1024
-    #warning Correct LITTLEFS_PORTENTA_H7_SIZE_KB to 1024 (KB)
-  #endif
-
   #if !defined(FORCE_REFORMAT)
     #define FORCE_REFORMAT            false
   #elif FORCE_REFORMAT
@@ -597,24 +590,12 @@ class DoubleResetDetector_Generic
 
       // Get limits of the the internal flash of the microcontroller
       _flashIAPLimits = getFlashIAPLimits();
-            
-      if (_flashIAPLimits.available_size < LITTLEFS_PORTENTA_H7_SIZE_KB * 1024)
-      {
-    #if (DRD_GENERIC_DEBUG)  
-        Serial.print("Too small Max LittleFS size (KB) = "); Serial.println(_flashIAPLimits.available_size / 1024.0);
-    #endif    
-        return;
-      }
-           
-      uint32_t deltaSize = _flashIAPLimits.available_size - LITTLEFS_PORTENTA_H7_SIZE_KB * 1024;
-  
+      
       Serial.print("Flash Size: (KB) = "); Serial.println(_flashIAPLimits.flash_size / 1024.0);
-      Serial.print("FlashIAP Start Address: 0x"); Serial.println(_flashIAPLimits.start_address, HEX);
-      Serial.print("New FlashIAP Start Address: 0x"); Serial.println(_flashIAPLimits.start_address + deltaSize, HEX);
-      Serial.print("Max FlashIAP Size (KB): "); Serial.println(_flashIAPLimits.available_size / 1024.0);
-      Serial.print("Current FlashIAP Size(KB): "); Serial.println(LITTLEFS_PORTENTA_H7_SIZE_KB);
-     
-      blockDevicePtr = new FlashIAPBlockDevice(_flashIAPLimits.start_address + deltaSize, LITTLEFS_PORTENTA_H7_SIZE_KB * 1024);
+      Serial.print("FlashIAP Start Address: = 0x"); Serial.println(_flashIAPLimits.start_address, HEX);
+      Serial.print("LittleFS size (KB) = "); Serial.println(_flashIAPLimits.available_size / 1024.0);
+            
+      blockDevicePtr = new FlashIAPBlockDevice(_flashIAPLimits.start_address, _flashIAPLimits.available_size);
       
       if (!blockDevicePtr)
       {
@@ -623,9 +604,6 @@ class DoubleResetDetector_Generic
   #endif      
         return;
       }
-      
-      // KH test, Initialize the Flash IAP block device
-      //blockDevicePtr->init();
       
   #if FORCE_REFORMAT
       fs.reformat(blockDevicePtr);

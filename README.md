@@ -11,6 +11,7 @@
 
 ## Table of Contents
 
+* [Important Notes for Portenta_H7](#important-notes-for-portenta_h7)
 * [Why do we need this DoubleResetDetector_Generic library](#why-do-we-need-this-doubleresetdetector_generic-library)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
@@ -83,6 +84,17 @@
 * [Contributing](#contributing)
 * [License](#license)
 * [Copyright](#copyright)
+---
+---
+
+### Important Notes for Portenta_H7
+
+The LittleFS of the new **Portenta_H7** board currently tested OK with only **maximum 8 files**. The files, from 9 and up, somehow strangely can't be written and / or read. This is possibly a bug in the [`ArduinoCore-mbed mbed_portenta core`](https://github.com/arduino/ArduinoCore-mbed). The same behaviour is observed from core v2.0.0 up to v2.4.1.
+
+If LittleFS size is reduced to 1024KB, test is OK with only **maximum 4 files**.
+
+Beware and keep cheking for updates.
+
 ---
 ---
 
@@ -595,7 +607,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS Flag read = 0xd0d04321
 Flag read = 0xd0d04321
@@ -617,7 +629,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS Flag read = 0xd0d01234
 Flag read = 0xd0d01234
@@ -639,7 +651,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -663,7 +675,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -687,7 +699,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -711,7 +723,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -736,7 +748,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Rtlduino RTL8720DN
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 Flag read = 0xbeefdeed
 No doubleResetDetected
@@ -750,7 +762,7 @@ No Double Reset Detected
 
 ```
 DoubleResetDetector minimal Example Program on Rtlduino RTL8720DN
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -769,7 +781,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano 33 BLE
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -793,7 +805,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano 33 BLE
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -816,19 +828,15 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 #### 7.1 No DRD
 
 ```
-
 DoubleResetDetector minimal Example Program on PORTENTA_H7_M7
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 Flash Size: (KB) = 2048.00
-FlashIAP Start Address: 0x8080000
-New FlashIAP Start Address: 0x8100000
-Max FlashIAP Size (KB): 1536.00
-Current FlashIAP Size(KB): 1024
-LittleFS Mount Fail
-Formatting... 
+FlashIAP Start Address: = 0x8080000
+LittleFS size (KB) = 1536.00
+LittleFS Mount OK
 Loading DRD file failed
-Flag read = 0x3000102
+Flag read = 0x0
 No doubleResetDetected
 Saving DOUBLERESETDETECTOR_FLAG to DRD file : 0xd0d01234
 Saving DRD file OK
@@ -842,13 +850,11 @@ No Double Reset Detected
 
 ```
 DoubleResetDetector minimal Example Program on PORTENTA_H7_M7
-DoubleResetDetector_Generic v1.7.1
+DoubleResetDetector_Generic v1.7.2
 -----------------------------------
 Flash Size: (KB) = 2048.00
-FlashIAP Start Address: 0x8080000
-New FlashIAP Start Address: 0x8100000
-Max FlashIAP Size (KB): 1536.00
-Current FlashIAP Size(KB): 1024
+FlashIAP Start Address: = 0x8080000
+LittleFS size (KB) = 1536.00
 LittleFS Mount OK
 LittleFS Flag read = 0xd0d01234
 Flag read = 0xd0d01234
@@ -886,6 +892,7 @@ You can also see how [`ESP_DoubleResetDetector`](https://github.com/khoih-prog/E
 17. [Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
 18. [Ethernet_Manager_STM32](https://github.com/khoih-prog/Ethernet_Manager_STM32)
 19. [ESP_WiFiManager_Lite](https://github.com/khoih-prog/ESP_WiFiManager_Lite)
+20. [WiFiManager_Portenta_H7_Lite](https://github.com/khoih-prog/WiFiManager_Portenta_H7_Lite)
 
 and the list is growing fast.
 
