@@ -595,7 +595,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS Flag read = 0xd0d04321
 Flag read = 0xd0d04321
@@ -617,7 +617,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS Flag read = 0xd0d01234
 Flag read = 0xd0d01234
@@ -639,7 +639,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -663,7 +663,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -687,7 +687,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -711,7 +711,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -736,7 +736,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Rtlduino RTL8720DN
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 Flag read = 0xbeefdeed
 No doubleResetDetected
@@ -750,7 +750,7 @@ No Double Reset Detected
 
 ```
 DoubleResetDetector minimal Example Program on Rtlduino RTL8720DN
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -769,7 +769,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano 33 BLE
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -793,7 +793,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano 33 BLE
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -816,15 +816,19 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 #### 7.1 No DRD
 
 ```
+
 DoubleResetDetector minimal Example Program on PORTENTA_H7_M7
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 Flash Size: (KB) = 2048.00
-FlashIAP Start Address: = 0x8080000
-LittleFS size (KB) = 1536.00
-LittleFS Mount OK
+FlashIAP Start Address: 0x8080000
+New FlashIAP Start Address: 0x8100000
+Max FlashIAP Size (KB): 1536.00
+Current FlashIAP Size(KB): 1024
+LittleFS Mount Fail
+Formatting... 
 Loading DRD file failed
-Flag read = 0x0
+Flag read = 0x3000102
 No doubleResetDetected
 Saving DOUBLERESETDETECTOR_FLAG to DRD file : 0xd0d01234
 Saving DRD file OK
@@ -838,11 +842,13 @@ No Double Reset Detected
 
 ```
 DoubleResetDetector minimal Example Program on PORTENTA_H7_M7
-DoubleResetDetector_Generic v1.7.0
+DoubleResetDetector_Generic v1.7.1
 -----------------------------------
 Flash Size: (KB) = 2048.00
-FlashIAP Start Address: = 0x8080000
-LittleFS size (KB) = 1536.00
+FlashIAP Start Address: 0x8080000
+New FlashIAP Start Address: 0x8100000
+Max FlashIAP Size (KB): 1536.00
+Current FlashIAP Size(KB): 1024
 LittleFS Mount OK
 LittleFS Flag read = 0xd0d01234
 Flag read = 0xd0d01234
@@ -936,6 +942,7 @@ Submit issues to: [DoubleResetDetector_Generic issues](https://github.com/khoih-
 15. Add support to Realtek **RTL8720DN, RTL8722DM, RTL8722CSM, etc.**, using [**Arduino AmebaD core**](https://github.com/ambiot/ambd_arduino)
 16. Add support to **MBED nRF52840-based boards such as Nano_33_BLE, Nano_33_BLE_Sense**, etc. using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
 17. Add support to **Portenta_H7** using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed) and LittleFS.
+18. Reduce **Portenta_H7** `LittleFS` size to 1024KB
 
 ---
 ---
