@@ -32,7 +32,7 @@
 
 ### Releases v1.7.2
 
-1. Back to using auto LittleFS size to fix bug and to permit 8 LittleFS files instead of 4 in previous release. There is a bug somewhere in the mbed_portenta core and we have to live with it.
+1. Back to using auto LittleFS size to fix bug and to permit 8 LittleFS files instead of 4 in previous release. There is a bug somewhere in the [`ArduinoCore-mbed mbed_portenta core`](https://github.com/arduino/ArduinoCore-mbed) and we have to live with it.
 
 ### Releases v1.7.1
 
