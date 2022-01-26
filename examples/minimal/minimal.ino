@@ -2,13 +2,13 @@
   minimal.ino
   DoubleResetDetector_Generic.h
   For AVR Mega, Teensy, STM32, nRF52, SAM DUE, SAMD21, SAMD51 boards
-  
+
   DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32. etc. boards
   to enable trigger configure mode by resetting the boards twice within configurable timeout seconds.
-  
+
   Based on and modified from DataCute https://github.com/datacute/DoubleResetDetector and
   https://github.com/khoih-prog/ESP_DoubleResetDetector
-  
+
   Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
   Licensed under MIT license
  *****************************************************************************************************************************/
@@ -17,7 +17,7 @@
    This method works well on Wemos boards which have a single reset button on board. It avoids using a pin for launching the configuration portal.
 
    How It Works
-   1) AVR Mega, Teensy, STM32
+   1) AVR Mega, Teensy
    Save data in EPPROM from address 1020, size 1024 bytes (both configurable)
    Note: Teensy 4.0 has only 1080 bytes of EEPROM-simulated Flash
    2) SAMD
@@ -28,6 +28,8 @@
    Save data in InternalFS, fle "/drd.dat" location 0
    5) RTL8720
    Save data in FlashStorage from address 0 (configurable to avoid conflict)
+   6) STM32
+   Save data in EEPROM-simulated FlashStorage from address 0 (configurable to avoid conflict)
 
    So when the device starts up it checks the InternalFS file "/drd.dat", EEPROM or (Due)FlashStorage for a flag to see if it has been
    recently reset within the configurable timeout seconds
@@ -62,7 +64,7 @@
 DoubleResetDetector_Generic* drd;
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN       25  //13
+#define LED_BUILTIN       25  //13
 #endif
 
 void setup()

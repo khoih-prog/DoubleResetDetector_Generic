@@ -1,4 +1,4 @@
-/****************************************************************************************************************************
+/**********************************************************************************************************************************
   DoubleResetDetector_Generic.h
   Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
 
@@ -11,7 +11,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
   Licensed under MIT license
 
-  Version: 1.7.3
+  Version: 1.8.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -28,15 +28,25 @@
   1.7.0   K Hoang      10/09/2021 Add support to MBED Portenta_H7 using LittleFS
   1.7.1   K Hoang      13/09/2021 Select fix LittleFS size of 1024KB
   1.7.2   K Hoang      14/09/2021 Back to using auto LittleFS to fix bug
-  1.7.3   K Hoang      10/10/2021 Update `platform.ini` and `library.json` 
- *****************************************************************************************************************************/
+  1.7.3   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.8.0   K Hoang      26/01/2022 Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
+ **********************************************************************************************************************************/
 
 #pragma once
 
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION       "DoubleResetDetector_Generic v1.7.3"
+#ifndef DOUBLERESETDETECTOR_GENERIC_VERSION
+  #define DOUBLERESETDETECTOR_GENERIC_VERSION            "DoubleResetDetector_Generic v1.8.0"
+
+  #define DOUBLERESETDETECTOR_GENERIC_VERSION_MAJOR      1
+  #define DOUBLERESETDETECTOR_GENERIC_VERSION_MINOR      8
+  #define DOUBLERESETDETECTOR_GENERIC_VERSION_PATCH      0
+
+#define DOUBLERESETDETECTOR_GENERIC_VERSION_INT        1008000
+
+#endif
 
 #if ( defined(ESP32) || defined(ESP8266) )
   #error Please use ESP_DoubleResetDetector library (github.com/khoih-prog/ESP_DoubleResetDetector) for ESP8266 and ESP32!
@@ -84,10 +94,13 @@
   
 /////////////////////////////   
 #elif ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-   || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) \
-   || defined(ARDUINO_SAMD_MKRWAN1310) || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) \
-   || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) \
-   || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__) )
+      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) \
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD51__) || defined(__SAMD51J20A__) \
+      || defined(__SAMD51J19A__) || defined(__SAMD51G19A__) || defined(__SAMD51P19A__)  \
+      || defined(__SAMD21E15A__) || defined(__SAMD21E16A__) || defined(__SAMD21E17A__) || defined(__SAMD21E18A__) \
+      || defined(__SAMD21G15A__) || defined(__SAMD21G16A__) || defined(__SAMD21G17A__) || defined(__SAMD21G18A__) \
+      || defined(__SAMD21J15A__) || defined(__SAMD21J16A__) || defined(__SAMD21J17A__) || defined(__SAMD21J18A__) )
   #if defined(DRD_GENERIC_USE_SAMD)
     #undef DRD_GENERIC_USE_SAMD
   #endif
@@ -243,7 +256,21 @@
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
   #warning Use RTL8720 and FlashStorage_RTL8720
+  
+#elif ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+       defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+       defined(STM32WB) || defined(STM32MP1) || defined(STM32L5) )  
 
+
+  #if defined(DRD_GENERIC_USE_STM32)
+    #undef DRD_GENERIC_USE_STM32
+  #endif
+  #define DRD_GENERIC_USE_STM32      true
+  #if defined(DRD_GENERIC_USE_EEPROM)
+    #undef DRD_GENERIC_USE_EEPROM
+  #endif
+  #define DRD_GENERIC_USE_EEPROM    false
+  #warning Use STM32 and FlashStorage_STM32
 /////////////////////////////   
 #else
   #if defined(CORE_TEENSY)
@@ -276,7 +303,7 @@
 /////////////////////////////
 #elif DRD_GENERIC_USE_SAMD
   // Include EEPROM-like API for FlashStorage
-  #include <FlashAsEEPROM_SAMD.h>             //https://github.com/khoih-prog/FlashStorage_SAMD
+  #include <FlashStorage_SAMD.h>             //https://github.com/khoih-prog/FlashStorage_SAMD
   
 /////////////////////////////  
 #elif DRD_GENERIC_USE_SAM_DUE
@@ -451,7 +478,7 @@
       // For STM32 devices having integrated EEPROM.
       #include <EEPROM.h>
       #warning STM32 devices have integrated EEPROM. Not using buffered API.   
-  #else  
+  #else
       /**
        Most STM32 devices don't have an integrated EEPROM. To emulate a EEPROM, the STM32 Arduino core emulated
        the operation of an EEPROM with the help of the embedded flash.
@@ -460,8 +487,13 @@
        The STM32 Arduino core provides a buffered access API to the emulated EEPROM. The library has allocated the
        buffer even if you don't use the buffered API, so it's strongly suggested to use the buffered API anyhow.
        */
-      #include <FlashStorage_STM32.h>       // https://github.com/khoih-prog/FlashStorage_STM32
-      #warning STM32 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32 library
+      #if ( defined(STM32F1xx) || defined(STM32F3xx) )
+        #include <FlashStorage_STM32F1.h>       // https://github.com/khoih-prog/FlashStorage_STM32
+        #warning STM32F1/F3 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32F1 library
+      #else
+        #include <FlashStorage_STM32.h>       // https://github.com/khoih-prog/FlashStorage_STM32
+        #warning STM32 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32 library
+      #endif
   #endif    // #if defined(DATA_EEPROM_BASE)
 
   //////////////////////////////////////////////

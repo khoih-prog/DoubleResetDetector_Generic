@@ -1,4 +1,4 @@
-/****************************************************************************************************************************
+/**********************************************************************************************************************************
   FlashIAPLimits.h - Filesystem wrapper for LittleFS on the Mbed Portenta_H7
   
   Arduino AVR, Teensy, SAM-DUE, SAMD, STM32, nRF52, etc. boards
@@ -12,7 +12,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
   Licensed under MIT license
 
-  Version: 1.7.3
+  Version: 1.8.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,7 +30,8 @@
   1.7.1   K Hoang      13/09/2021 Select fix LittleFS size of 1024KB
   1.7.2   K Hoang      14/09/2021 Back to using auto LittleFS to fix bug
   1.7.3   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
-*****************************************************************************************************************************/
+  1.8.0   K Hoang      26/01/2022 Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
+ **********************************************************************************************************************************/
 
 #pragma once
 
@@ -53,7 +54,7 @@ struct FlashIAPLimits
 
 // Get the actual start address and available size for the FlashIAP Block Device
 // considering the space already occupied by the sketch (firmware).
-FlashIAPLimits getFlashIAPLimits()
+static FlashIAPLimits getFlashIAPLimits()
 {
   // Alignment lambdas
   auto align_down = [](uint64_t val, uint64_t size) 
