@@ -11,7 +11,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
   Licensed under MIT license
 
-  Version: 1.8.0
+  Version: 1.8.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -30,6 +30,7 @@
   1.7.2   K Hoang      14/09/2021 Back to using auto LittleFS to fix bug
   1.7.3   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
   1.8.0   K Hoang      26/01/2022 Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
+  1.8.1   K Hoang      05/03/2022 Add waitingForDRD() function to signal in DRD wating period
  **********************************************************************************************************************************/
 
 #pragma once
@@ -37,14 +38,18 @@
 #ifndef DoubleResetDetector_Generic_H
 #define DoubleResetDetector_Generic_H
 
+#ifndef DRD_GENERIC_DEBUG
+  #define DRD_GENERIC_DEBUG       false
+#endif
+
 #ifndef DOUBLERESETDETECTOR_GENERIC_VERSION
-  #define DOUBLERESETDETECTOR_GENERIC_VERSION            "DoubleResetDetector_Generic v1.8.0"
+  #define DOUBLERESETDETECTOR_GENERIC_VERSION            "DoubleResetDetector_Generic v1.8.1"
 
   #define DOUBLERESETDETECTOR_GENERIC_VERSION_MAJOR      1
   #define DOUBLERESETDETECTOR_GENERIC_VERSION_MINOR      8
-  #define DOUBLERESETDETECTOR_GENERIC_VERSION_PATCH      0
+  #define DOUBLERESETDETECTOR_GENERIC_VERSION_PATCH      1
 
-#define DOUBLERESETDETECTOR_GENERIC_VERSION_INT        1008000
+#define DOUBLERESETDETECTOR_GENERIC_VERSION_INT        1008001
 
 #endif
 
@@ -90,7 +95,10 @@
     #undef DRD_GENERIC_USE_EEPROM
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
-  #warning Use SAM-DUE and DueFlashStorage
+  
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use SAM-DUE and DueFlashStorage
+  #endif
   
 /////////////////////////////   
 #elif ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
@@ -109,7 +117,10 @@
     #undef DRD_GENERIC_USE_EEPROM
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
-  #warning Use SAMD and FlashStorage
+  
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use SAMD and FlashStorage
+  #endif
 
 /////////////////////////////   
 #elif ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
@@ -125,8 +136,11 @@
     #undef DRD_GENERIC_USE_EEPROM
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
-  #warning Use NRF52 and LittleFS / InternalFS
-
+  
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use NRF52 and LittleFS / InternalFS
+  #endif
+  
 ///////////////////////////// 
 #elif ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) )
 
@@ -140,8 +154,10 @@
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
   
-  #warning Use RP2040 (such as RASPBERRY_PI_PICO) and LittleFS
-
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use RP2040 (such as RASPBERRY_PI_PICO) and LittleFS
+  #endif
+  
 ///////////////////////////// 
 #elif ( defined(ARDUINO_ARCH_RP2040) && defined(ARDUINO_ARCH_MBED) )
 
@@ -149,7 +165,11 @@
   // To check and determine if we need to init LittleFS here
   #if MBED_RP2040_INITIALIZED
     #define DRD_MBED_LITTLEFS_NEED_INIT     false
-    #warning MBED_RP2040_INITIALIZED in another place
+    
+    #if (DRD_GENERIC_DEBUG)
+      #warning MBED_RP2040_INITIALIZED in another place
+    #endif
+    
   #else
     // Better to delay until init done
     #if defined(MBED_RP2040_INITIALIZED)
@@ -170,8 +190,10 @@
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
   
-  #warning Use MBED RP2040 (such as NANO_RP2040_CONNECT, RASPBERRY_PI_PICO) and LittleFS
-
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use MBED RP2040 (such as NANO_RP2040_CONNECT, RASPBERRY_PI_PICO) and LittleFS
+  #endif
+  
 ///////////////////////////// 
 #elif ( ( defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_PORTENTA_H7_M4) ) && defined(ARDUINO_ARCH_MBED) )
 
@@ -180,10 +202,16 @@
   #endif
 
   #if defined(CORE_CM7)
-    #warning Using Portenta H7 M7 core
+    #if (DRD_GENERIC_DEBUG)
+      #warning Using Portenta H7 M7 core
+    #endif
+    
     #define BOARD_NAME              "PORTENTA_H7_M7"
   #else
-    #warning Using Portenta H7 M4 core
+    #if (DRD_GENERIC_DEBUG)
+      #warning Using Portenta H7 M4 core
+    #endif
+
     #define BOARD_NAME              "PORTENTA_H7_M4"
   #endif
   
@@ -191,7 +219,11 @@
   // To check and determine if we need to init LittleFS here
   #if MBED_PORTENTA_H7_INITIALIZED
     #define DRD_MBED_LITTLEFS_NEED_INIT     false
-    #warning MBED_PORTENTA_H7_INITIALIZED in another place
+    
+    #if (DRD_GENERIC_DEBUG)
+      #warning MBED_PORTENTA_H7_INITIALIZED in another place
+    #endif
+    
   #else
     // Better to delay until init done
     #if defined(MBED_PORTENTA_H7_INITIALIZED)
@@ -212,7 +244,9 @@
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
   
-  #warning Use MBED PORTENTA_H7 and LittleFS
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use MBED PORTENTA_H7 and LittleFS
+  #endif
   
 ///////////////////////////// 
 #elif ( defined(ARDUINO_ARCH_NRF52840) && defined(ARDUINO_ARCH_MBED) && defined(ARDUINO_ARDUINO_NANO33BLE) )
@@ -221,7 +255,11 @@
   // To check and determine if we need to init LittleFS here
   #if NANO33BLE_INITIALIZED
     #define DRD_NANO33BLE_NEED_INIT     false
-    #warning NANO33BLE_INITIALIZED in another place
+    
+    #if (DRD_GENERIC_DEBUG)
+      #warning NANO33BLE_INITIALIZED in another place
+    #endif
+    
   #else
     // Better to delay until init done
     #if defined(NANO33BLE_INITIALIZED)
@@ -242,7 +280,9 @@
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
   
-  #warning Use MBED nRF52840 (such as Nano_33_BLE, Nano_33_BLE_Sense) and LittleFS
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use MBED nRF52840 (such as Nano_33_BLE, Nano_33_BLE_Sense) and LittleFS
+  #endif
   
 /////////////////////////////
 #elif defined(CONFIG_PLATFORM_8721D)
@@ -255,7 +295,10 @@
     #undef DRD_GENERIC_USE_EEPROM
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
-  #warning Use RTL8720 and FlashStorage_RTL8720
+  
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use RTL8720 and FlashStorage_RTL8720
+  #endif
   
 #elif ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
        defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
@@ -270,20 +313,35 @@
     #undef DRD_GENERIC_USE_EEPROM
   #endif
   #define DRD_GENERIC_USE_EEPROM    false
-  #warning Use STM32 and FlashStorage_STM32
+  
+  #if (DRD_GENERIC_DEBUG)
+    #warning Use STM32 and FlashStorage_STM32
+  #endif
+  
 /////////////////////////////   
 #else
   #if defined(CORE_TEENSY)
-    #warning Use TEENSY and EEPROM
+    #if (DRD_GENERIC_DEBUG)
+      #warning Use TEENSY and EEPROM
+    #endif
+    
   #elif ( defined(ARDUINO_AVR_ADK) || defined(ARDUINO_AVR_BT) || defined(ARDUINO_AVR_DUEMILANOVE) || defined(ARDUINO_AVR_ESPLORA) \
       || defined(ARDUINO_AVR_ETHERNET) || defined(ARDUINO_AVR_FIO) || defined(ARDUINO_AVR_GEMMA) || defined(ARDUINO_AVR_LEONARDO) \
       || defined(ARDUINO_AVR_LILYPAD) || defined(ARDUINO_AVR_LILYPAD_USB) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) \
       || defined(ARDUINO_AVR_MICRO) || defined(ARDUINO_AVR_MINI) || defined(ARDUINO_AVR_NANO) || defined(ARDUINO_AVR_NG) \
       || defined(ARDUINO_AVR_PRO) || defined(ARDUINO_AVR_ROBOT_CONTROL) || defined(ARDUINO_AVR_ROBOT_MOTOR) || defined(ARDUINO_AVR_UNO) \
-      || defined(ARDUINO_AVR_YUN) )        
-    #warning Use AVR and EEPROM
+      || defined(ARDUINO_AVR_YUN) )    
+      
+    #if (DRD_GENERIC_DEBUG)
+      #warning Use AVR and EEPROM
+    #endif      
+    
   #else
-    #warning Use Unknown board and EEPROM
+  
+    #if (DRD_GENERIC_DEBUG)
+      #warning Use Unknown board and EEPROM
+    #endif
+    
   #endif
 #endif
 ///////////////////////////// 
@@ -376,8 +434,10 @@
   #endif
   #define  DRD_FILENAME     "/fs/drd.dat"
   
-  #warning DRD_MBED_LITTLEFS INITIALIZED locally in DoubleResetDetector_Generic
-  
+  #if (DRD_GENERIC_DEBUG)
+    #warning DRD_MBED_LITTLEFS INITIALIZED locally in DoubleResetDetector_Generic
+  #endif
+    
 /////////////////////////////
 #elif (DRD_GENERIC_USE_MBED_PORTENTA && DRD_PORTENTA_LITTLEFS_NEED_INIT)
 
@@ -411,8 +471,10 @@
   #endif
   #define  DRD_FILENAME     "/littlefs/drd.dat"
   
-  #warning DRD_PORTENTA_LITTLEFS INITIALIZED locally in DoubleResetDetector_Generic
-    
+  #if (DRD_GENERIC_DEBUG)
+    #warning DRD_PORTENTA_LITTLEFS INITIALIZED locally in DoubleResetDetector_Generic
+  #endif
+  
 /////////////////////////////
 #elif (DRD_GENERIC_USE_NANO33BLE && DRD_NANO33BLE_NEED_INIT)
 
@@ -466,8 +528,9 @@
   #endif
   #define  DRD_FILENAME     "/littlefs/drd.dat"
   
-  #warning DRD_NANO33BLE_LITTLEFS INITIALIZED locally in DoubleResetDetector_Generic
-  
+  #if (DRD_GENERIC_DEBUG)
+    #warning DRD_NANO33BLE_LITTLEFS INITIALIZED locally in DoubleResetDetector_Generic
+  #endif
     
 /////////////////////////////
 #elif DRD_GENERIC_USE_STM32
@@ -477,7 +540,11 @@
   #if defined(DATA_EEPROM_BASE)
       // For STM32 devices having integrated EEPROM.
       #include <EEPROM.h>
-      #warning STM32 devices have integrated EEPROM. Not using buffered API.   
+      
+      #if (DRD_GENERIC_DEBUG)
+        #warning STM32 devices have integrated EEPROM. Not using buffered API.
+      #endif
+         
   #else
       /**
        Most STM32 devices don't have an integrated EEPROM. To emulate a EEPROM, the STM32 Arduino core emulated
@@ -489,10 +556,18 @@
        */
       #if ( defined(STM32F1xx) || defined(STM32F3xx) )
         #include <FlashStorage_STM32F1.h>       // https://github.com/khoih-prog/FlashStorage_STM32
-        #warning STM32F1/F3 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32F1 library
+        
+        #if (DRD_GENERIC_DEBUG)
+          #warning STM32F1/F3 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32F1 library
+        #endif
+        
       #else
         #include <FlashStorage_STM32.h>       // https://github.com/khoih-prog/FlashStorage_STM32
-        #warning STM32 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32 library
+        
+        #if (DRD_GENERIC_DEBUG)
+          #warning STM32 devices have no integrated EEPROM. Using buffered API with FlashStorage_STM32 library
+        #endif
+        
       #endif
   #endif    // #if defined(DATA_EEPROM_BASE)
 
@@ -507,10 +582,6 @@
 #endif    //#if DRD_GENERIC_USE_EEPROM
 
 /////////////////////////////////////////////
-
-#ifndef DRD_GENERIC_DEBUG
-  #define DRD_GENERIC_DEBUG       false
-#endif
 
 #define DOUBLERESETDETECTOR_GENERIC_FLAG_SET    0xD0D01234
 #define DOUBLERESETDETECTOR_GENERIC_FLAG_CLEAR  0xD0D04321
@@ -739,6 +810,11 @@ class DoubleResetDetector_Generic
       return doubleResetDetected;
 
     };
+    
+    bool waitingForDRD()
+    {
+      return waitingForDoubleReset;
+    }
     
     /////////////////////////////////////////////
 

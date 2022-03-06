@@ -6,7 +6,8 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/DoubleResetDetector_Generic.svg)](http://github.com/khoih-prog/DoubleResetDetector_Generic/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 ---
 ---
@@ -43,6 +44,7 @@
 * [How It Works](#how-it-works)
 * [Examples](#examples)
   * [ 1. minimal](examples/minimal)
+  * [ 2. checkWaitingDRD](examples/checkWaitingDRD) **New**
   * [Many other libraries are depending on this library's DRD feature](#many-other-libraries-are-depending-on-this-librarys-drd-feature)
     * [ 1. BlynkEthernet_WM](https://github.com/khoih-prog/BlynkEthernet_WM)
     * [ 2. Blynk_Esp8266AT_WM](https://github.com/khoih-prog/Blynk_Esp8266AT_WM)
@@ -54,7 +56,7 @@
     * [ 8. Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
     * [ 9. Ethernet_Manager_STM32](https://github.com/khoih-prog/Ethernet_Manager_STM32)
     * [10. WiFiManager_Generic_Lite](https://github.com/khoih-prog/WiFiManager_Generic_Lite)
-* [Example minimal](#example-minimal)
+* [Example checkWaitingDRD](#example-checkWaitingDRD)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. SAMD_WiFiNINA on SAMD NANO_33_IOT using FlashStorage_SAMD](#1-samd_wifinina-on-samd-nano_33_iot-using-flashstorage_samd)
     * [1.1 DRD Not Detected](#11-drd-not-detected)
@@ -133,7 +135,9 @@ This library can be used to detect a double reset within a predetermined time to
 
 This [**DoubleResetDetector_Generic** library](https://github.com/khoih-prog/DoubleResetDetector_Generic) currently supports these following boards:
 
- 1. **nRF52 boards**, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.**
+ 1. **nRF52 boards**, such as 
+  - **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.**
+  - - **Sparkfun Pro nRF52840 Mini**
  
  2. **SAM DUE**
  
@@ -188,14 +192,14 @@ This [**DoubleResetDetector_Generic** library](https://github.com/khoih-prog/Dou
  2. [`Arduino Core for STM32 v2.2.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
  3. [`Teensy core 1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards
- 5. [`Arduino SAMD core 1.8.12+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.7.8+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 5. [`Arduino SAMD core 1.8.13+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.7.9+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.2+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v1.3.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
- 9. [`Earle Philhower's arduino-pico core v1.10.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
-10. [`Arduino mbed_rp2040 core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-11. [`Arduino mbed_nano core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-12. [`ArduinoCore-mbed mbed_portenta core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+ 9. [`Earle Philhower's arduino-pico core v1.12.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+10. [`Arduino mbed_rp2040 core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+11. [`Arduino mbed_nano core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+12. [`ArduinoCore-mbed mbed_portenta core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
 13. [`Arduino AmebaD core 3.1.2+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM, etc. boards. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
 
 14. [`FlashStorage_SAMD library v1.3.2+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest)
@@ -227,7 +231,7 @@ Another way to install is to:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**DoubleResetDetector_Generic** library](https://platformio.org/lib/show/7240/DoubleResetDetector_Generic) by using [Library Manager](https://platformio.org/lib/show/7240/DoubleResetDetector_Generic/installation). Search for **DoubleResetDetector_Generic** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**DoubleResetDetector_Generic** library](https://registry.platformio.org/libraries/khoih-prog/DoubleResetDetector_Generic) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/DoubleResetDetector_Generic/installation). Search for **DoubleResetDetector_Generic** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
@@ -299,13 +303,13 @@ This file must be copied into the directory:
 
 #### 4. For Arduino SAMD boards
  
- ***To be able to compile, run and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.12) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.12).
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.13) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.13).
  
 #### For core version v1.8.10+
 
-Supposing the Arduino SAMD version is 1.8.12. Now only one file must be copied into the directory:
+Supposing the Arduino SAMD version is 1.8.13. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/samd/1.8.12/platform.txt`
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.13/platform.txt`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -338,13 +342,13 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to compile, run and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the whole [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.7) directory into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.7). 
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the whole [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.9) directory into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.9). 
 
-Supposing the Adafruit SAMD core version is 1.7.7. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.9. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.7/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.7/cores/arduino/Print.h`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.7/cores/arduino/Print.cpp`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.h`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.cpp`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -446,12 +450,12 @@ With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add
 
 #### 9. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -464,9 +468,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.6.1. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 2.7.2. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -492,6 +496,7 @@ Detects a double reset so that an alternative start-up mode can be used. One exa
 ### Examples: 
 
  1. [minimal](examples/minimal)
+ 2. [checkWaitingDRD](examples/checkWaitingDRD) **New**
 
 
 #### Many other libraries are depending on this library's DRD feature
@@ -513,57 +518,10 @@ Detects a double reset so that an alternative start-up mode can be used. One exa
 ---
 ---
    
-#### Example [minimal](examples/minimal)
+#### Example [checkWaitingDRD](examples/checkWaitingDRD)
 
-```cpp
-#define DRD_GENERIC_DEBUG       true  //false
+https://github.com/khoih-prog/DoubleResetDetector_Generic/blob/5216729d2ebfb6d350dc39ebf8c4b8f3cab4ac39/examples/checkWaitingDRD/checkWaitingDRD.ino#L57-L164
 
-#include <DoubleResetDetector_Generic.h>
-
-// Number of seconds after reset during which a
-// subseqent reset will be considered a double reset.
-#define DRD_TIMEOUT 10
-
-// RTC Memory Address for the DoubleResetDetector to use
-#define DRD_ADDRESS 0
-
-DoubleResetDetector_Generic* drd;
-
-#ifndef LED_BUILTIN
-#define LED_BUILTIN       13
-#endif
-
-void setup()
-{
-  pinMode(LED_BUILTIN, OUTPUT);
-
-  Serial.begin(115200);
-  while (!Serial);
-
-  Serial.println();
-  Serial.println("DoubleResetDetector Example Program");
-  Serial.println("-----------------------------------");
-
-  drd = new DoubleResetDetector_Generic(DRD_TIMEOUT, DRD_ADDRESS);
-
-  if (drd->detectDoubleReset()) {
-    Serial.println("Double Reset Detected");
-    digitalWrite(LED_BUILTIN, LOW);
-  } else {
-    Serial.println("No Double Reset Detected");
-    digitalWrite(LED_BUILTIN, HIGH);
-  }
-}
-
-void loop()
-{
-  // Call the double reset detector loop method every so often,
-  // so that it can recognise when the timeout expires.
-  // You can also call drd.stop() when you wish to no longer
-  // consider the next reset as a double reset.
-  drd->loop();
-}
-```
 
 ---
 ---
@@ -628,7 +586,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS Flag read = 0xd0d04321
 Flag read = 0xd0d04321
@@ -650,7 +608,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RASPBERRY_PI_PICO
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS Flag read = 0xd0d01234
 Flag read = 0xd0d01234
@@ -672,7 +630,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -696,7 +654,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on RaspberryPi Pico
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -720,7 +678,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -744,7 +702,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano RP2040 Connect
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -769,7 +727,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Rtlduino RTL8720DN
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 Flag read = 0xbeefdeed
 No doubleResetDetected
@@ -783,7 +741,7 @@ No Double Reset Detected
 
 ```
 DoubleResetDetector minimal Example Program on Rtlduino RTL8720DN
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -802,7 +760,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on Nano 33 BLE
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -826,7 +784,7 @@ ClearFlag write = 0xd0d04321
 
 ```
 DoubleResetDetector minimal Example Program on Nano 33 BLE
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -850,7 +808,7 @@ This is the terminal output when running [minimal](examples/minimal) example on 
 
 ```
 DoubleResetDetector minimal Example Program on PORTENTA_H7_M7
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 Flash Size: (KB) = 2048.00
 FlashIAP Start Address: = 0x8080000
@@ -871,7 +829,7 @@ No Double Reset Detected
 
 ```
 DoubleResetDetector minimal Example Program on PORTENTA_H7_M7
-DoubleResetDetector_Generic v1.8.0
+DoubleResetDetector_Generic v1.8.1
 -----------------------------------
 Flash Size: (KB) = 2048.00
 FlashIAP Start Address: = 0x8080000
@@ -974,7 +932,8 @@ Submit issues to: [DoubleResetDetector_Generic issues](https://github.com/khoih-
 19. Update to be compatible with new `FlashStorage_SAMD`, `FlashStorage_STM32` and `FlashStorage_STM32F1` libraries.
 20. Use more efficient `FlashStorage_STM32` and `FlashStorage_STM32F1` libraries for STM32
 21. Add support to more `SAMD` and `STM32` boards
-
+22. Add support to `Sparkfun Pro nRF52840 Mini`
+23. Add waitingForDRD() function to signal in DRD wating period
 
 ---
 ---
