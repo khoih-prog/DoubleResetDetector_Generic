@@ -598,7 +598,7 @@ Detects a double reset so that an alternative start-up mode can be used. One exa
    
 #### Example [checkWaitingDRD](examples/checkWaitingDRD)
 
-https://github.com/khoih-prog/DoubleResetDetector_Generic/blob/5216729d2ebfb6d350dc39ebf8c4b8f3cab4ac39/examples/checkWaitingDRD/checkWaitingDRD.ino#L57-L164
+https://github.com/khoih-prog/DoubleResetDetector_Generic/blob/3c90445934c50984a2c58884aef72689b8da963b/examples/checkWaitingDRD/checkWaitingDRD.ino#L51-L166
 
 
 ---
