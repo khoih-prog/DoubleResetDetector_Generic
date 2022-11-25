@@ -11,6 +11,7 @@ DoubleResetDetector_Generic
 # Methods and Functions (KEYWORD2)
 #######################################
 detectDoubleReset		KEYWORD2
+waitingForDRD KEYWORD2
 loop	KEYWORD2
 stop	KEYWORD2
 

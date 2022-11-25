@@ -68,7 +68,7 @@
 
 #include <DoubleResetDetector_Generic.h>      //https://github.com/khoih-prog/DoubleResetDetector_Generic
 
-// Number of seconds after reset during which a 
+// Number of seconds after reset during which a
 // subsequent reset will be considered a double reset.
 #define DRD_TIMEOUT 10
 
@@ -108,13 +108,13 @@ void check_status()
     {
       digitalWrite(LED_BUILTIN, LEDState);
 
-      LEDState = !LEDState;    
+      LEDState = !LEDState;
     }
     else
     {
       digitalWrite(LED_BUILTIN, LED_OFF);
     }
-    
+
     checkstatus_timeout = current_millis + DRD_CHECK_INTERVAL;
   }
 }
@@ -122,30 +122,32 @@ void check_status()
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
-  
+
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
 
 #if defined(BOARD_NAME)
-  Serial.print(F("\nStarting checkWaitingDRD on")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting checkWaitingDRD on"));
+  Serial.println(BOARD_NAME);
 #else
   Serial.print(F("\nStarting checkWaitingDRD"));
-#endif  
+#endif
 
   Serial.println(DOUBLERESETDETECTOR_GENERIC_VERSION);
   Serial.println("-----------------------------------");
-   
+
   drd = new DoubleResetDetector_Generic(DRD_TIMEOUT, DRD_ADDRESS);
 
-  if (drd->detectDoubleReset()) 
+  if (drd->detectDoubleReset())
   {
     Serial.println("Double Reset Detected");
     digitalWrite(LED_BUILTIN, LED_ON);
     DRD_Detected = true;
-  } 
-  else 
+  }
+  else
   {
     Serial.println("No Double Reset Detected");
     digitalWrite(LED_BUILTIN, LED_OFF);

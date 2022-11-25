@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-  minimal.ino
-  DoubleResetDetector_Generic.h
+   checkWaitingDRD.ino
+   DoubleResetDetector_Generic.h
   For AVR Mega, Teensy, STM32, nRF52, SAM DUE, SAMD21, SAMD51 boards
 
   DoubleResetDetector_Generic is a library for the Arduino AVR, Teensy, SAM-DUE, SAMD, STM32. etc. boards
@@ -12,6 +12,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/DoubleResetDetector_Generic
   Licensed under MIT license
  *****************************************************************************************************************************/
+
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.
    This method works well on Wemos boards which have a single reset button on board. It avoids using a pin for launching the configuration portal.
@@ -46,58 +47,112 @@
    To support AVR, Teensy, SAM DUE, SAMD and STM32, etc., use this DoubleResetDetector_Generic from //https://github.com/khoih-prog/DoubleResetDetector_Generic
  *****************************************************************************************************************************/
 
-#define DRD_GENERIC_DEBUG       true  //false
+
+// These defines must be put before #include <DoubleResetDetector_Generic.h>
+// to select where to store DoubleResetDetector's variable.
+// For ESP32, You must select one to be true (EEPROM or SPIFFS)
+// For ESP8266, You must select one to be true (RTC, EEPROM, LITTLEFS or SPIFFS)
+// Otherwise, library will use default EEPROM storage
+
+// This example demonstrates how to use new function waitingForDRD() to signal the stage of DRD
+// waitingForDRD() returns true if in DRD_TIMEOUT, false when out of DRD_TIMEOUT
+// In this example, LED_BUILTIN will blink in DRD_TIMEOUT period, ON when DR has been detected, OFF otherwise
+
+#define DEBUG_ETHERNET_GENERIC_PORT         SerialDebug
+
+#define DRD_GENERIC_DEBUG       true    //false
 
 // You have to select true for the first time for any board
 #define FORCE_REFORMAT          false
 
+// Uncomment to have debug
+//#define DOUBLERESETDETECTOR_DEBUG       true
 
-#include <DoubleResetDetector_Generic.h>
+#include <DoubleResetDetector_Generic.h>      //https://github.com/khoih-prog/DoubleResetDetector_Generic
 
 // Number of seconds after reset during which a
-// subseqent reset will be considered a double reset.
-#define DRD_TIMEOUT         10
+// subsequent reset will be considered a double reset.
+#define DRD_TIMEOUT 10
 
 // RTC Memory Address for the DoubleResetDetector to use
-#define DRD_ADDRESS         0
+#define DRD_ADDRESS 0
 
 DoubleResetDetector_Generic* drd;
 
+// Change according to your board
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN       25  //13
+  // Generic boards following LED at pin 13
+  #define LED_BUILTIN       13
 #endif
+
+// Change according to your board
+#define LED_OFF             LOW
+#define LED_ON              HIGH
+
+bool DRD_Detected = false;
+
+void check_status()
+{
+  static unsigned long checkstatus_timeout  = 0;
+  static bool LEDState = LED_OFF;
+
+  static unsigned long current_millis;
+
+#define DRD_CHECK_INTERVAL    500L
+
+  current_millis = millis();
+
+  // If DRD_Detected, don't need to blink, just keep LED_BUILTIN ON
+  if ( !DRD_Detected && ((current_millis > checkstatus_timeout) || (checkstatus_timeout == 0)) )
+  {
+    // If in DRD checking loop, blinking the LED_BUILTIN
+    if ( drd->waitingForDRD() )
+    {
+      digitalWrite(LED_BUILTIN, LEDState);
+
+      LEDState = !LEDState;
+    }
+    else
+    {
+      digitalWrite(LED_BUILTIN, LED_OFF);
+    }
+
+    checkstatus_timeout = current_millis + DRD_CHECK_INTERVAL;
+  }
+}
 
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
 
-  Serial.begin(115200);
+  SerialDebug.begin(115200);
 
-  while (!Serial);
+  while (!SerialDebug);
 
-  Serial.println();
+  delay(200);
 
 #if defined(BOARD_NAME)
-  Serial.print(F("DoubleResetDetector minimal Example Program on "));
-  Serial.println(BOARD_NAME);
+  SerialDebug.print(F("\nStarting checkWaitingDRD on"));
+  SerialDebug.println(BOARD_NAME);
 #else
-  Serial.println(F("DoubleResetDetector minimal Example Program"));
+  SerialDebug.println(F("\nStarting checkWaitingDRD"));
 #endif
 
-  Serial.println(DOUBLERESETDETECTOR_GENERIC_VERSION);
-  Serial.println("-----------------------------------");
+  SerialDebug.println(DOUBLERESETDETECTOR_GENERIC_VERSION);
+  SerialDebug.println("-----------------------------------");
 
   drd = new DoubleResetDetector_Generic(DRD_TIMEOUT, DRD_ADDRESS);
 
   if (drd->detectDoubleReset())
   {
-    Serial.println("Double Reset Detected");
-    digitalWrite(LED_BUILTIN, LOW);
+    SerialDebug.println("Double Reset Detected");
+    digitalWrite(LED_BUILTIN, LED_ON);
+    DRD_Detected = true;
   }
   else
   {
-    Serial.println("No Double Reset Detected");
-    digitalWrite(LED_BUILTIN, HIGH);
+    SerialDebug.println("No Double Reset Detected");
+    digitalWrite(LED_BUILTIN, LED_OFF);
   }
 }
 
@@ -108,4 +163,6 @@ void loop()
   // You can also call drd.stop() when you wish to no longer
   // consider the next reset as a double reset.
   drd->loop();
+
+  check_status();
 }
